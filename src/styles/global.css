@@ -110,6 +110,7 @@ button {
 
 /* スクロールで“ふわっと”表示（reveal） — html.js-reveal が付いた時のみ隠す（FOUC/JS無効対策） */
 html.js-reveal :is(
+  .hero__media,
   .hero__overlay,
   .brand__inner,
   .section-head,
@@ -131,15 +132,11 @@ html.js-reveal :is(
   .contact-form
 ) {
   opacity: 0;
-  transform: translateY(22px);
-  transition:
-    opacity 0.8s ease,
-    transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
-  will-change: opacity, transform;
+  transition: opacity 1.6s ease;
+  will-change: opacity;
 }
 html.js-reveal .is-visible {
   opacity: 1 !important;
-  transform: none !important;
 }
 
 /* 手描きイラストの区切り（中央配置） */
