@@ -108,6 +108,14 @@ button {
   aspect-ratio: 1 / 1;
 }
 
+/* 手描きイラストの区切り（中央配置） */
+.illust-divider {
+  display: flex;
+  justify-content: center;
+  padding-block: var(--space-4);
+  color: var(--color-accent-soft);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

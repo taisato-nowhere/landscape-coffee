@@ -1,0 +1,9 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import NewsListBody from "../../../components/pages/NewsListBody.astro";
+const locale = "en" as const;
+---
+
+<BaseLayout locale={locale} title="NEWS" description="News from LANDSCAPE COFFEE: openings, media and projects.">
+  <NewsListBody locale={locale} />
+</BaseLayout>

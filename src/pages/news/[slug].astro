@@ -1,0 +1,16 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import NewsDetailBody from "../../components/pages/NewsDetailBody.astro";
+import { news } from "../../data/content";
+
+export function getStaticPaths() {
+  return news.map((n) => ({ params: { slug: n.slug }, props: { item: n } }));
+}
+
+const locale = "ja" as const;
+const { item } = Astro.props;
+---
+
+<BaseLayout locale={locale} title={item.title[locale]} description={item.title[locale]}>
+  <NewsDetailBody locale={locale} item={item} />
+</BaseLayout>

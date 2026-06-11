@@ -1,0 +1,93 @@
+---
+import { Image } from "astro:assets";
+import PageHeader from "../PageHeader.astro";
+import { localizedPath, type Locale } from "../../i18n/ui";
+import { getImage } from "../../lib/images";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const heroImg = getImage("hero/main");
+
+const t = {
+  ja: {
+    eyebrow: "ABOUT",
+    title: "思い出の交差点",
+    subtitle: "A Place Where Memories Meet.",
+    sections: [
+      {
+        h: "Landscape とは",
+        b: "Landscape は、景色だけではありません。いま目の前に見えている街並みだけでなく、なんだか楽しかったあの頃の記憶、いまこの瞬間を味わう感覚、これから育てたい未来のワクワク。私たちはそれら「思い出」も含めて、Landscape と呼びます。ここで出会う一人ひとりと人生の思い出を語りあい、様々な土地や人と出会って知ったコーヒー・食・お酒を、思い出話とともに届けたい。そんな思い出の交差点をつくっていきます。",
+      },
+      {
+        h: "ロゴに込めた思い",
+        b: "原点であるコーヒーを真ん中に、思い出をじっくり積み上げていく「年輪」をモチーフにしました。一番外の円は禅の「円相」を参考に、あえて閉じず、未完成のままワクワクして歩み続けることを表しています。人も店も、不完全だからこそ愛おしい。芯を持って地域に深く根ざしながら、じっくりと年輪を重ねていきます。",
+      },
+      {
+        h: "スペシャルティコーヒーを、日常に",
+        b: "香川県坂出市から始まったブランドとして、スペシャルティコーヒーを日常に届けます。福島・本宮、岐阜・高山、香川・高松へと、思い出の交差点を広げていきます。",
+      },
+    ],
+  },
+  en: {
+    eyebrow: "ABOUT",
+    title: "A Crossroads of Memories",
+    subtitle: "A Place Where Memories Meet.",
+    sections: [
+      {
+        h: "What is Landscape",
+        b: "Landscape is not only the scenery in front of us. It is the memory of those somehow joyful days, the feeling of savoring this very moment, and the excitement for a future we want to nurture. We call all of these memories, too, Landscape. We want to share the coffee, food and drinks we have discovered through people and places — together with the stories behind them — and build a crossroads of memories.",
+      },
+      {
+        h: "The meaning of our logo",
+        b: "With coffee — our origin — at the center, the mark is based on tree rings that slowly accumulate, like memories. The outermost ring, inspired by the Zen ensō, is intentionally left open: to keep walking, unfinished and full of anticipation. People and shops are lovable precisely because they are incomplete.",
+      },
+      {
+        h: "Specialty coffee, into everyday life",
+        b: "Starting from Sakaide in Kagawa, we bring specialty coffee into everyday life — expanding the crossroads of memories to Motomiya (Fukushima), Takayama (Gifu) and Takamatsu (Kagawa).",
+      },
+    ],
+  },
+}[locale];
+---
+
+<PageHeader eyebrow={t.eyebrow} title={t.title} subtitle={t.subtitle} />
+
+<div class="container container--narrow about">
+  {
+    heroImg && (
+      <Image class="about__hero" src={heroImg} alt="" widths={[760, 1280]} sizes="(max-width: 800px) 100vw, 760px" />
+    )
+  }
+  {
+    t.sections.map((s) => (
+      <section class="about__section">
+        <h2>{s.h}</h2>
+        <p>{s.b}</p>
+      </section>
+    ))
+  }
+  <a class="link-more" href={localizedPath("/stores", locale)}>STORES →</a>
+</div>
+
+<style>
+  .about__hero {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    margin-bottom: var(--space-5);
+  }
+  .about__section {
+    margin-bottom: var(--space-5);
+  }
+  .about__section h2 {
+    font-size: var(--fs-h2);
+    font-weight: 600;
+    margin-bottom: var(--space-2);
+    letter-spacing: 0.04em;
+  }
+  .about__section p {
+    line-height: 2.1;
+  }
+</style>

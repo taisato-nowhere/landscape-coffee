@@ -1,0 +1,26 @@
+---
+import PageHeader from "../PageHeader.astro";
+import { type Locale } from "../../i18n/ui";
+
+interface Props {
+  locale: Locale;
+  kind: "tokushoho" | "privacy";
+}
+const { locale, kind } = Astro.props;
+
+const copy = {
+  tokushoho: {
+    ja: { title: "特定商取引法に基づく表記", body: "オンラインストア開設時に、事業者名・所在地・連絡先・販売価格・送料・支払方法・引渡時期・返品/交換条件などを記載します。（準備中）" },
+    en: { title: "Commercial Transactions Act", body: "At the launch of the online store, this page will list the business name, address, contact, prices, shipping, payment methods, delivery timing, and return/exchange policy. (Coming soon.)" },
+  },
+  privacy: {
+    ja: { title: "プライバシーポリシー", body: "取得する個人情報の範囲、利用目的、第三者提供、開示・訂正・削除の手続き、お問い合わせ窓口などを記載します。（準備中）" },
+    en: { title: "Privacy Policy", body: "This page will describe what personal data we collect, how it is used, third-party sharing, your rights, and how to contact us. (Coming soon.)" },
+  },
+}[kind][locale];
+---
+
+<PageHeader eyebrow="LEGAL" title={copy.title} />
+<div class="container container--narrow">
+  <p style="line-height:2.1;">{copy.body}</p>
+</div>

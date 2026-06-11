@@ -1,0 +1,98 @@
+---
+import PageHeader from "../PageHeader.astro";
+import { type Locale } from "../../i18n/ui";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const c = {
+  ja: {
+    title: "お問い合わせ",
+    subtitle: "コラボ・取材・卸・その他、お気軽にどうぞ。",
+    type: "お問い合わせ種別",
+    types: ["コラボ", "取材", "卸", "その他"],
+    name: "お名前",
+    email: "メールアドレス",
+    message: "お問い合わせ内容",
+    submit: "送信する",
+    note: "※ 送信機能は準備中です（公開時にフォーム送信サービス／メール通知とスパム対策を接続します）。",
+    direct: "お急ぎの場合は Instagram の DM もご利用ください。",
+  },
+  en: {
+    title: "Contact",
+    subtitle: "Collaborations, press, wholesale and more — feel free to reach out.",
+    type: "Inquiry type",
+    types: ["Collaboration", "Press", "Wholesale", "Other"],
+    name: "Name",
+    email: "Email",
+    message: "Message",
+    submit: "Send",
+    note: "* Submission is not yet active (a form service / email notification with spam protection will be connected at launch).",
+    direct: "For urgent matters, you can also DM us on Instagram.",
+  },
+}[locale];
+---
+
+<PageHeader eyebrow="CONTACT" title={c.title} subtitle={c.subtitle} />
+
+<div class="container container--narrow">
+  <form class="contact-form" action="#" method="post" aria-describedby="contact-note">
+    <label class="field">
+      <span>{c.type}</span>
+      <select name="type" required>
+        {c.types.map((opt) => <option value={opt}>{opt}</option>)}
+      </select>
+    </label>
+    <label class="field">
+      <span>{c.name}</span>
+      <input type="text" name="name" required autocomplete="name" />
+    </label>
+    <label class="field">
+      <span>{c.email}</span>
+      <input type="email" name="email" required autocomplete="email" />
+    </label>
+    <label class="field">
+      <span>{c.message}</span>
+      <textarea name="message" rows="6" required></textarea>
+    </label>
+    <button type="submit" class="contact-form__submit">{c.submit}</button>
+    <p id="contact-note" class="contact-form__note">{c.note}</p>
+    <p class="contact-form__direct">
+      {c.direct}{" "}
+      <a href="https://www.instagram.com/landscape_coffee37/" target="_blank" rel="noopener">@landscape_coffee37</a>
+    </p>
+  </form>
+</div>
+
+<style>
+  .contact-form { display: flex; flex-direction: column; gap: var(--space-3); }
+  .field { display: flex; flex-direction: column; gap: 0.4rem; }
+  .field span { font-size: var(--fs-small); letter-spacing: 0.06em; color: var(--color-ink-soft); }
+  .field input,
+  .field select,
+  .field textarea {
+    font: inherit;
+    padding: 0.7rem 0.8rem;
+    border: 1px solid var(--color-line);
+    background: var(--color-surface);
+    border-radius: var(--radius);
+    color: var(--color-ink);
+  }
+  .field textarea { resize: vertical; }
+  .contact-form__submit {
+    align-self: flex-start;
+    margin-top: var(--space-1);
+    padding: 0.8rem 2.4rem;
+    background: var(--color-ink);
+    color: var(--color-bg);
+    border: none;
+    border-radius: var(--radius);
+    letter-spacing: 0.12em;
+    transition: background var(--transition);
+  }
+  .contact-form__submit:hover { background: var(--color-accent); }
+  .contact-form__note { font-size: var(--fs-small); color: var(--color-ink-soft); }
+  .contact-form__direct { font-size: var(--fs-small); }
+  .contact-form__direct a { color: var(--color-accent); }
+</style>

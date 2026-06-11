@@ -1,0 +1,9 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import StoresBody from "../../components/pages/StoresBody.astro";
+const locale = "ja" as const;
+---
+
+<BaseLayout locale={locale} title="STORES" description="LANDSCAPE COFFEE の店舗一覧。坂出37・本宮07・高山21・高松。">
+  <StoresBody locale={locale} />
+</BaseLayout>

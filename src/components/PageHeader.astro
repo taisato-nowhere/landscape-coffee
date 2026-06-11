@@ -1,0 +1,36 @@
+---
+// 下層ページ共通のページヘッダー（タイトル帯）。
+interface Props {
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+}
+const { eyebrow, title, subtitle } = Astro.props;
+---
+
+<header class="page-header">
+  <div class="container container--narrow">
+    {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+    <h1 class="page-header__title">{title}</h1>
+    {subtitle && <p class="page-header__subtitle">{subtitle}</p>}
+  </div>
+</header>
+
+<style>
+  .page-header {
+    padding-block: var(--space-6) var(--space-4);
+    border-bottom: 1px solid var(--color-line);
+    margin-bottom: var(--space-5);
+  }
+  .page-header__title {
+    font-family: var(--font-serif);
+    font-size: var(--fs-h1);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    margin-top: var(--space-1);
+  }
+  .page-header__subtitle {
+    margin-top: var(--space-2);
+    color: var(--color-ink-soft);
+  }
+</style>

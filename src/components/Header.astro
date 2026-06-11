@@ -4,8 +4,10 @@ import { useTranslations, localizedPath, type Locale } from "../i18n/ui";
 
 interface Props {
   locale: Locale;
+  /** ファーストビューに重ねる透明ヘッダー（白文字）。スクロールで solid 化。 */
+  transparent?: boolean;
 }
-const { locale } = Astro.props;
+const { locale, transparent = false } = Astro.props;
 const t = useTranslations(locale);
 const p = (path: string) => localizedPath(path, locale);
 
@@ -14,6 +16,7 @@ const nav = [
   { href: p("/stores"), label: t("nav.stores") },
   { href: p("/shop"), label: t("nav.shop") },
   { href: p("/news"), label: t("nav.news") },
+  { href: p("/journal"), label: t("nav.journal") },
   { href: p("/contact"), label: t("nav.contact") },
 ];
 
@@ -22,7 +25,7 @@ const otherLocale: Locale = locale === "ja" ? "en" : "ja";
 const switchHref = localizedPath("/", otherLocale);
 ---
 
-<header class="site-header">
+<header class:list={["site-header", { "site-header--overlay": transparent }]}>
   <div class="container site-header__inner">
     <a href={p("/")} class="site-header__logo">
       <Logo variant="horizontal" height={72} />
@@ -65,6 +68,69 @@ const switchHref = localizedPath("/", otherLocale);
     background: color-mix(in srgb, var(--color-bg) 88%, transparent);
     backdrop-filter: blur(8px);
     border-bottom: 1px solid var(--color-line);
+    transition: background var(--transition), border-color var(--transition);
+  }
+
+  /* --- ファーストビュー用 透明オーバーレイヘッダー --- */
+  .site-header--overlay {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    background: transparent;
+    backdrop-filter: none;
+    border-bottom-color: transparent;
+  }
+  /* 透明時：文字・アイコンを白に、ロゴを反転して白に */
+  .site-header--overlay .site-header__nav a,
+  .site-header--overlay .lang,
+  .site-header--overlay .lang span,
+  .site-header--overlay .cart {
+    color: #fff;
+  }
+  .site-header--overlay .menu-toggle span {
+    background: #fff;
+  }
+  .site-header--overlay .logo {
+    filter: invert(1) brightness(2.4);
+  }
+  /* スクロール後：solid（生成り＋黒文字）に戻す */
+  .site-header--overlay.is-scrolled {
+    background: color-mix(in srgb, var(--color-bg) 92%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom-color: var(--color-line);
+  }
+  .site-header--overlay.is-scrolled .site-header__nav a,
+  .site-header--overlay.is-scrolled .cart {
+    color: var(--color-ink);
+  }
+  .site-header--overlay.is-scrolled .lang span {
+    color: var(--color-ink-soft);
+  }
+  .site-header--overlay.is-scrolled .lang span.is-active {
+    color: var(--color-ink);
+  }
+  .site-header--overlay.is-scrolled .menu-toggle span {
+    background: var(--color-ink);
+  }
+  .site-header--overlay.is-scrolled .logo {
+    filter: none;
+  }
+  /* モバイルメニューを開いたら（透明状態でも）背景を出す */
+  .site-header--overlay[data-open] {
+    background: var(--color-bg);
+    border-bottom-color: var(--color-line);
+  }
+  .site-header--overlay[data-open] .site-header__nav a,
+  .site-header--overlay[data-open] .cart,
+  .site-header--overlay[data-open] .lang span.is-active {
+    color: var(--color-ink);
+  }
+  .site-header--overlay[data-open] .menu-toggle span {
+    background: var(--color-ink);
+  }
+  .site-header--overlay[data-open] .logo {
+    filter: none;
   }
   .site-header__inner {
     display: flex;
@@ -129,9 +195,44 @@ const switchHref = localizedPath("/", otherLocale);
   @media (max-width: 900px) {
     .site-header__nav {
       display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      margin: 0;
+      padding: var(--space-1) var(--gutter) var(--space-2);
+      background: var(--color-bg);
+      border-bottom: 1px solid var(--color-line);
+    }
+    .site-header[data-open] .site-header__nav {
+      display: flex;
+    }
+    .site-header__nav a {
+      padding: 0.85rem 0;
+      border-bottom: 1px solid var(--color-line);
     }
     .menu-toggle {
       display: flex;
     }
   }
 </style>
+
+<script>
+  const header = document.querySelector(".site-header");
+  const btn = header?.querySelector(".menu-toggle");
+  btn?.addEventListener("click", () => {
+    const open = header!.toggleAttribute("data-open");
+    btn.setAttribute("aria-expanded", String(open));
+  });
+
+  // 透明オーバーレイヘッダー：スクロールで solid 化
+  if (header?.classList.contains("site-header--overlay")) {
+    const onScroll = () =>
+      header.classList.toggle("is-scrolled", window.scrollY > 80);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+  }
+</script>

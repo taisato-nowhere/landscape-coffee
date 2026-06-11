@@ -1,0 +1,55 @@
+---
+import { Image } from "astro:assets";
+import PageHeader from "../PageHeader.astro";
+import { type Locale } from "../../i18n/ui";
+import { products, yen } from "../../data/content";
+import { getImage } from "../../lib/images";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const head = {
+  ja: { title: "オンラインストア", subtitle: "焙煎したスペシャルティコーヒーを、ご自宅へ。", note: "※ 決済・配送は Shopify で提供予定（準備中）。" },
+  en: { title: "Online Store", subtitle: "Freshly roasted specialty coffee, delivered to your home.", note: "* Checkout & shipping via Shopify (coming soon)." },
+}[locale];
+---
+
+<PageHeader eyebrow="ONLINE STORE" title={head.title} subtitle={head.subtitle} />
+
+<div class="container">
+  <ul class="shop-grid">
+    {
+      products.map((pr) => {
+        const img = getImage(`products/${pr.handle}`);
+        return (
+          <li class="product">
+            <a href={`#${pr.handle}`}>
+              {img ? (
+                <Image class="product__img" src={img} alt="" widths={[300, 600]} sizes="(max-width: 900px) 50vw, 25vw" />
+              ) : (
+                <div class="product__img ph ph--square" aria-hidden="true">{pr.name[locale]}</div>
+              )}
+              <p class="product__name">{pr.name[locale]}</p>
+              <p class="product__meta"><span>{pr.weight}</span><span>{yen(pr.price)}</span></p>
+            </a>
+          </li>
+        );
+      })
+    }
+  </ul>
+  <p class="shop-note">{head.note}</p>
+</div>
+
+<style>
+  .shop-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-4);
+  }
+  .product__img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; margin-bottom: var(--space-2); }
+  .product__name { font-weight: 600; letter-spacing: 0.04em; }
+  .product__meta { display: flex; justify-content: space-between; margin-top: 0.2rem; font-size: var(--fs-small); color: var(--color-ink-soft); }
+  .shop-note { margin-top: var(--space-5); text-align: center; font-size: var(--fs-small); color: var(--color-ink-soft); }
+  @media (max-width: 900px) { .shop-grid { grid-template-columns: repeat(2, 1fr); } }
+</style>

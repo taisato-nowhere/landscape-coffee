@@ -1,0 +1,16 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import StoreDetailBody from "../../components/pages/StoreDetailBody.astro";
+import { stores } from "../../data/content";
+
+export function getStaticPaths() {
+  return stores.map((s) => ({ params: { slug: s.slug }, props: { store: s } }));
+}
+
+const locale = "ja" as const;
+const { store } = Astro.props;
+---
+
+<BaseLayout locale={locale} title={`${store.nameEn} ${store.code}`} description={`LANDSCAPE COFFEE ${store.nameEn}（${store.area[locale]}）の店舗情報。`}>
+  <StoreDetailBody locale={locale} store={store} />
+</BaseLayout>

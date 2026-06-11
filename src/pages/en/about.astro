@@ -1,0 +1,9 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import AboutBody from "../../components/pages/AboutBody.astro";
+const locale = "en" as const;
+---
+
+<BaseLayout locale={locale} title="ABOUT" description="The concept of LANDSCAPE COFFEE — a crossroads of memories — and the meaning of the tree-ring logo.">
+  <AboutBody locale={locale} />
+</BaseLayout>

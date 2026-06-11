@@ -7,6 +7,7 @@ import LandscapesSection from "../../components/LandscapesSection.astro";
 import NewsSection from "../../components/NewsSection.astro";
 import JournalSection from "../../components/JournalSection.astro";
 import OnlineStoreSection from "../../components/OnlineStoreSection.astro";
+import Illustration from "../../components/Illustration.astro";
 
 const locale = "en" as const;
 ---
@@ -15,11 +16,14 @@ const locale = "en" as const;
   locale={locale}
   title="LANDSCAPE COFFEE"
   description="LANDSCAPE COFFEE — a brand delivering specialty coffee into everyday life. A place where memories meet."
+  transparentHeader
 >
   <Hero locale={locale} />
   <BrandStatement locale={locale} />
+  <div class="illust-divider"><Illustration name="mountain" width={150} /></div>
   <LandscapesSection locale={locale} />
   <NewsSection locale={locale} />
   <JournalSection locale={locale} />
+  <div class="illust-divider"><Illustration name="cup" width={64} /></div>
   <OnlineStoreSection locale={locale} />
 </BaseLayout>

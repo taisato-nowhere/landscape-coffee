@@ -1,0 +1,98 @@
+---
+import { Image } from "astro:assets";
+import PageHeader from "../PageHeader.astro";
+import { useTranslations, localizedPath, type Locale } from "../../i18n/ui";
+import { stores } from "../../data/content";
+import { getImage } from "../../lib/images";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+const head = {
+  ja: { title: "店舗", subtitle: "思い出の交差点を、各地に。" },
+  en: { title: "Stores", subtitle: "Crossroads of memories, across Japan." },
+}[locale];
+---
+
+<PageHeader eyebrow="STORES" title={head.title} subtitle={head.subtitle} />
+
+<div class="container">
+  <ul class="stores-grid">
+    {
+      stores.map((s) => {
+        const img = getImage(`stores/${s.slug}`);
+        const open = s.status === "open";
+        return (
+          <li class="store-card">
+            <a href={localizedPath(`/stores/${s.slug}`, locale)}>
+              {img ? (
+                <Image class="store-card__img" src={img} alt="" widths={[400, 800]} sizes="(max-width: 720px) 100vw, 50vw" />
+              ) : (
+                <div class="store-card__img ph ph--wide" aria-hidden="true">{s.nameEn}</div>
+              )}
+              <div class="store-card__body">
+                <span class="store-card__code">{s.code}</span>
+                <div>
+                  <p class="store-card__name">{s.nameEn}</p>
+                  <p class="store-card__area">{s.area[locale]}</p>
+                </div>
+                <span class={`badge ${open ? "badge--open" : "badge--coming"}`}>
+                  {open ? t("status.open") : t("status.coming")}
+                </span>
+              </div>
+            </a>
+          </li>
+        );
+      })
+    }
+  </ul>
+</div>
+
+<style>
+  .stores-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-5) var(--space-4);
+  }
+  .store-card__img {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+  }
+  .store-card__body {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+  }
+  .store-card__code {
+    font-family: var(--font-en-display);
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .store-card__name {
+    font-weight: 600;
+    letter-spacing: 0.06em;
+  }
+  .store-card__area {
+    font-size: var(--fs-small);
+    color: var(--color-ink-soft);
+  }
+  .badge {
+    margin-left: auto;
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+    padding: 0.2rem 0.6rem;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+  }
+  .badge--open { color: var(--color-accent); }
+  .badge--coming { color: var(--color-ink-soft); }
+
+  @media (max-width: 680px) {
+    .stores-grid { grid-template-columns: 1fr; }
+  }
+</style>

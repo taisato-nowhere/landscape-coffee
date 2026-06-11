@@ -1,0 +1,66 @@
+---
+import { Image } from "astro:assets";
+import PageHeader from "../PageHeader.astro";
+import { localizedPath, type Locale } from "../../i18n/ui";
+import { news } from "../../data/content";
+import { getImage } from "../../lib/images";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const head = {
+  ja: { title: "ニュース", subtitle: "出店・メディア・プロジェクトのお知らせ。" },
+  en: { title: "News", subtitle: "Openings, media and projects." },
+}[locale];
+---
+
+<PageHeader eyebrow="NEWS" title={head.title} subtitle={head.subtitle} />
+
+<div class="container">
+  <ul class="news-list">
+    {
+      news.map((n) => {
+        const img = getImage(`news/${n.slug}`);
+        return (
+          <li class="news-row">
+            <a href={localizedPath(`/news/${n.slug}`, locale)}>
+              {img ? (
+                <Image class="news-row__thumb" src={img} alt="" widths={[240, 480]} sizes="200px" />
+              ) : (
+                <div class="news-row__thumb ph ph--wide" aria-hidden="true">{n.category}</div>
+              )}
+              <div class="news-row__body">
+                <p class="news-row__meta"><span>{n.date}</span><span class="news-row__cat">{n.category}</span></p>
+                <p class="news-row__title">{n.title[locale]}</p>
+              </div>
+            </a>
+          </li>
+        );
+      })
+    }
+  </ul>
+</div>
+
+<style>
+  .news-list { display: flex; flex-direction: column; }
+  .news-row { border-top: 1px solid var(--color-line); }
+  .news-row:last-child { border-bottom: 1px solid var(--color-line); }
+  .news-row a {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: var(--space-3);
+    align-items: center;
+    padding-block: var(--space-3);
+    transition: background var(--transition);
+  }
+  .news-row a:hover { background: var(--color-bg-alt); }
+  .news-row__thumb { width: 200px; aspect-ratio: 16 / 9; object-fit: cover; }
+  .news-row__meta { display: flex; gap: var(--space-2); font-size: var(--fs-small); color: var(--color-ink-soft); }
+  .news-row__cat { color: var(--color-accent); letter-spacing: 0.12em; }
+  .news-row__title { margin-top: 0.3rem; font-size: 1.05rem; }
+  @media (max-width: 680px) {
+    .news-row a { grid-template-columns: 120px 1fr; }
+    .news-row__thumb { width: 120px; }
+  }
+</style>

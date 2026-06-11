@@ -1,0 +1,16 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import JournalDetailBody from "../../../components/pages/JournalDetailBody.astro";
+import { journal } from "../../../data/content";
+
+export function getStaticPaths() {
+  return journal.map((j) => ({ params: { slug: j.slug }, props: { item: j } }));
+}
+
+const locale = "en" as const;
+const { item } = Astro.props;
+---
+
+<BaseLayout locale={locale} title={item.title[locale]} description={item.title[locale]}>
+  <JournalDetailBody locale={locale} item={item} />
+</BaseLayout>

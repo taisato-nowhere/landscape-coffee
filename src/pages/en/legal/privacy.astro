@@ -1,0 +1,9 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import LegalBody from "../../../components/pages/LegalBody.astro";
+const locale = "en" as const;
+---
+
+<BaseLayout locale={locale} title="Privacy Policy">
+  <LegalBody locale={locale} kind="privacy" />
+</BaseLayout>

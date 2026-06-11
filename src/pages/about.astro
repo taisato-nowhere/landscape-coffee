@@ -1,0 +1,9 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import AboutBody from "../components/pages/AboutBody.astro";
+const locale = "ja" as const;
+---
+
+<BaseLayout locale={locale} title="ABOUT" description="LANDSCAPE COFFEE のブランドコンセプト「思い出の交差点」と、年輪に込めた思い。">
+  <AboutBody locale={locale} />
+</BaseLayout>

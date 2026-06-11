@@ -1,0 +1,9 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import JournalListBody from "../../../components/pages/JournalListBody.astro";
+const locale = "en" as const;
+---
+
+<BaseLayout locale={locale} title="JOURNAL" description="LANDSCAPE COFFEE Journal — stories of people, towns and coffee.">
+  <JournalListBody locale={locale} />
+</BaseLayout>

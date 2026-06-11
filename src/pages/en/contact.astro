@@ -1,0 +1,9 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ContactBody from "../../components/pages/ContactBody.astro";
+const locale = "en" as const;
+---
+
+<BaseLayout locale={locale} title="CONTACT" description="Contact LANDSCAPE COFFEE — collaborations, press, wholesale and more.">
+  <ContactBody locale={locale} />
+</BaseLayout>

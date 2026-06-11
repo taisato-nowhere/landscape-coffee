@@ -1,0 +1,9 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import ShopBody from "../../../components/pages/ShopBody.astro";
+const locale = "en" as const;
+---
+
+<BaseLayout locale={locale} title="ONLINE STORE" description="LANDSCAPE COFFEE online store — specialty coffee beans, coming soon.">
+  <ShopBody locale={locale} />
+</BaseLayout>
