@@ -24,7 +24,7 @@
     "Noto Serif JP", serif;
   --font-en-display: "Helvetica Neue", Arial, sans-serif; /* 数字/英字の見出し用 */
 
-  --fs-hero: clamp(2rem, 6vw, 4.5rem);
+  --fs-hero: clamp(1.6rem, 5.4vw, 4.5rem);
   --fs-h1: clamp(1.6rem, 4vw, 3rem);
   --fs-h2: clamp(1.3rem, 3vw, 2rem);
   --fs-numeral: clamp(3.5rem, 12vw, 9rem); /* 37 / 07 / 21 の巨大数字 */

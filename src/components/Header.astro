@@ -91,7 +91,7 @@ const switchHref = localizedPath("/", otherLocale);
   .site-header--overlay .menu-toggle span {
     background: #fff;
   }
-  .site-header--overlay .logo {
+  .site-header--overlay :global(.logo) {
     filter: invert(1) brightness(2.4);
   }
   /* スクロール後：solid（生成り＋黒文字）に戻す */
@@ -113,7 +113,7 @@ const switchHref = localizedPath("/", otherLocale);
   .site-header--overlay.is-scrolled .menu-toggle span {
     background: var(--color-ink);
   }
-  .site-header--overlay.is-scrolled .logo {
+  .site-header--overlay.is-scrolled :global(.logo) {
     filter: none;
   }
   /* モバイルメニューを開いたら（透明状態でも）背景を出す */
@@ -129,7 +129,7 @@ const switchHref = localizedPath("/", otherLocale);
   .site-header--overlay[data-open] .menu-toggle span {
     background: var(--color-ink);
   }
-  .site-header--overlay[data-open] .logo {
+  .site-header--overlay[data-open] :global(.logo) {
     filter: none;
   }
   .site-header__inner {
