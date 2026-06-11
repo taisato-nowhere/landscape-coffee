@@ -27,6 +27,14 @@ const fullTitle =
     {description && <meta property="og:description" content={description} />}
     <meta property="og:type" content="website" />
     <link rel="icon" href={withBase("/favicon.png")} type="image/png" />
+    <script is:inline>
+      // reveal用：描画前に html.js-reveal を付けて隠す（FOUC防止 / 動き低減設定は尊重）
+      try {
+        if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          document.documentElement.classList.add("js-reveal");
+        }
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <Header locale={locale} transparent={transparentHeader} />
@@ -34,5 +42,39 @@ const fullTitle =
       <slot />
     </main>
     <Footer locale={locale} />
+
+    <script>
+      // スクロールで“ふわっと”表示。隣り合う要素は少しずつ遅らせてカスケード。
+      const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+      if (!mq.matches) {
+        const sel = [
+          ".hero__overlay", ".brand__inner", ".section-head", ".landscape",
+          ".news__item", ".journal__card", ".product", ".illust-divider",
+          ".about__hero", ".about__section", ".store-card", ".store-detail__hero",
+          ".store-detail__info", ".store-detail__menu", ".news-row",
+          ".journal-card", ".news-article", ".journal-article", ".contact-form",
+        ].join(",");
+        const els = Array.from(document.querySelectorAll<HTMLElement>(sel));
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const e of entries) {
+              if (e.isIntersecting) {
+                e.target.classList.add("is-visible");
+                io.unobserve(e.target);
+              }
+            }
+          },
+          { threshold: 0.1, rootMargin: "0px 0px -6% 0px" }
+        );
+        for (const el of els) {
+          const sibs = el.parentElement
+            ? Array.from(el.parentElement.children).filter((c) => c.matches(sel))
+            : [el];
+          const i = sibs.indexOf(el);
+          if (i > 0) el.style.transitionDelay = Math.min(i, 4) * 80 + "ms";
+          io.observe(el);
+        }
+      }
+    </script>
   </body>
 </html>

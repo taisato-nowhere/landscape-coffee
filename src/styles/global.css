@@ -108,6 +108,40 @@ button {
   aspect-ratio: 1 / 1;
 }
 
+/* スクロールで“ふわっと”表示（reveal） — html.js-reveal が付いた時のみ隠す（FOUC/JS無効対策） */
+html.js-reveal :is(
+  .hero__overlay,
+  .brand__inner,
+  .section-head,
+  .landscape,
+  .news__item,
+  .journal__card,
+  .product,
+  .illust-divider,
+  .about__hero,
+  .about__section,
+  .store-card,
+  .store-detail__hero,
+  .store-detail__info,
+  .store-detail__menu,
+  .news-row,
+  .journal-card,
+  .news-article,
+  .journal-article,
+  .contact-form
+) {
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity 0.8s ease,
+    transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+  will-change: opacity, transform;
+}
+html.js-reveal .is-visible {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
 /* 手描きイラストの区切り（中央配置） */
 .illust-divider {
   display: flex;
