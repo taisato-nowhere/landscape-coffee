@@ -1,6 +1,6 @@
 ---
-// ヒーロー：叩き案 A（写真主役＋「思い出の交差点」コピー）。
-// 実写真が入るまではプレースホルダ。確定後 .hero__media を <img>/<Image> に差し替え。
+// ヒーロー：複数の写真をゆっくり動かしながら（Ken Burns）クロスフェードで切り替える。
+// Berth Coffee 参考。画像は src/assets/images/hero/*.jpg を順に表示。
 import { Image } from "astro:assets";
 import { useTranslations, type Locale } from "../i18n/ui";
 import { getImage } from "../lib/images";
@@ -10,19 +10,34 @@ interface Props {
 }
 const { locale } = Astro.props;
 const t = useTranslations(locale);
-const heroImg = getImage("hero/main");
+
+// スライド用の写真（存在するものだけ）。先頭が最初に表示される。
+const slides = ["hero/main", "hero/02", "hero/05", "hero/03", "hero/04"]
+  .map((key) => getImage(key))
+  .filter((img): img is NonNullable<typeof img> => Boolean(img));
 ---
 
 <section class="hero">
-  {
-    heroImg ? (
-      <Image class="hero__media hero__img" src={heroImg} alt="" widths={[768, 1280, 2000]} sizes="100vw" />
-    ) : (
-      <div class="hero__media ph ph--wide" role="img" aria-label="Kominka cafe interior">
-        古民家の店内写真（プレースホルダ）
-      </div>
-    )
-  }
+  <div class="hero__media" data-hero-slides>
+    {
+      slides.length > 0 ? (
+        slides.map((img, i) => (
+          <Image
+            class:list={["hero__slide", { "is-active": i === 0 }]}
+            src={img}
+            alt=""
+            widths={[768, 1280, 2000]}
+            sizes="100vw"
+            loading={i === 0 ? "eager" : "lazy"}
+          />
+        ))
+      ) : (
+        <div class="ph ph--wide" role="img" aria-label="Kominka cafe interior">
+          古民家の店内写真（プレースホルダ）
+        </div>
+      )
+    }
+  </div>
 
   <div class="container hero__overlay">
     <p class="eyebrow hero__eyebrow">LANDSCAPE COFFEE</p>
@@ -39,18 +54,41 @@ const heroImg = getImage("hero/main");
     isolation: isolate;
   }
   .hero__media {
+    position: relative;
     aspect-ratio: 16 / 10;
     min-height: 60vh;
-  }
-  .hero__img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    overflow: hidden;
+    background: var(--color-bg-alt);
   }
   @media (min-width: 768px) {
     .hero__media {
       aspect-ratio: 16 / 8;
       min-height: 72vh;
+    }
+  }
+  /* 各スライドは重ねて配置し、opacity でクロスフェード */
+  .hero__slide {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    /* ゆっくりフェード */
+    transition: opacity 2.4s ease;
+    will-change: opacity, transform;
+  }
+  .hero__slide.is-active {
+    opacity: 1;
+  }
+  /* Ken Burns：表示中だけゆっくりズーム＆パン */
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__slide {
+      transform: scale(1.06);
+    }
+    .hero__slide.is-active {
+      transform: scale(1);
+      transition: opacity 2.4s ease, transform 9s ease-out;
     }
   }
   .hero__overlay {
@@ -91,3 +129,18 @@ const heroImg = getImage("hero/main");
     color: var(--color-bg);
   }
 </style>
+
+<script>
+  // 一定間隔で is-active を次のスライドへ送り、クロスフェード＋Ken Burns を回す。
+  const box = document.querySelector<HTMLElement>("[data-hero-slides]");
+  const slides = box ? Array.from(box.querySelectorAll<HTMLElement>(".hero__slide")) : [];
+  if (slides.length > 1) {
+    let i = 0;
+    const INTERVAL = 6500; // 表示時間（フェード2.4s込み）
+    setInterval(() => {
+      slides[i].classList.remove("is-active");
+      i = (i + 1) % slides.length;
+      slides[i].classList.add("is-active");
+    }, INTERVAL);
+  }
+</script>
