@@ -74,21 +74,27 @@ const slides = ["hero/main", "hero/02", "hero/05", "hero/03", "hero/04"]
     height: 100%;
     object-fit: cover;
     opacity: 0;
-    /* ゆっくりフェード */
-    transition: opacity 2.4s ease;
+    /* ゆっくりフェード（イーズで滑らかに） */
+    transition: opacity 3s ease-in-out;
     will-change: opacity, transform;
+    transform: translateZ(0);
   }
   .hero__slide.is-active {
     opacity: 1;
   }
-  /* Ken Burns：表示中だけゆっくりズーム＆パン */
+  /* Ken Burns：全スライドを“同じタイムライン”で常にゆっくりズーム。
+     切替時も拡大率が一致するので、カクつき（拡大率の飛び）が起きない。 */
   @media (prefers-reduced-motion: no-preference) {
     .hero__slide {
-      transform: scale(1.06);
+      animation: hero-zoom 28s ease-in-out infinite alternate;
     }
-    .hero__slide.is-active {
-      transform: scale(1);
-      transition: opacity 2.4s ease, transform 9s ease-out;
+  }
+  @keyframes hero-zoom {
+    from {
+      transform: scale(1.02);
+    }
+    to {
+      transform: scale(1.12);
     }
   }
   .hero__overlay {

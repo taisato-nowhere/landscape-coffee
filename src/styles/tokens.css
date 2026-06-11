@@ -16,6 +16,8 @@
   --color-line: #ddd5c7;        /* 罫線 */
   --color-accent: #7a5230;      /* コーヒーブラウンのアクセント */
   --color-accent-soft: #b08b62; /* アクセント淡 */
+  --color-ember: #b5532b;       /* 熾火（おきび）— 年輪の灯・OPEN等に一点だけ */
+  --color-overlay: #1a1714;     /* 写真に重ねる暗幕のベース色（木目に寄せた暖かい墨） */
 
   /* --- タイポグラフィ --- */
   --font-sans: "Helvetica Neue", "Hiragino Kaku Gothic ProN", "Hiragino Sans",

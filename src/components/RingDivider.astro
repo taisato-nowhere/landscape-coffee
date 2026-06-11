@@ -1,0 +1,81 @@
+---
+// 年輪の区切り。スクロールで画面に入ると、内側の輪から外側へ一本ずつ“描かれる”。
+// 方向A（年輪）の signature。装飾なので aria-hidden。
+// reveal の IntersectionObserver が .ring-divider に is-visible を付けるとアニメ開始。
+interface Props {
+  /** SVG の表示幅(px) */
+  size?: number;
+  class?: string;
+}
+const { size = 180, class: cls } = Astro.props;
+
+// 中心(100,100)から外側へ。年輪らしく真円でなく僅かに歪んだ楕円＋微小オフセット。
+// len は各リングのおおよその周長（stroke-dasharray 用）。
+const rings = [
+  { rx: 13, ry: 12, cx: 100, cy: 100, len: 80 },
+  { rx: 29, ry: 27, cx: 100.5, cy: 99.5, len: 176 },
+  { rx: 47, ry: 44, cx: 99.5, cy: 100.5, len: 286 },
+  { rx: 67, ry: 63, cx: 100.5, cy: 100, len: 408 },
+  { rx: 87, ry: 81, cx: 100, cy: 100.5, len: 528 },
+];
+---
+
+<div class="ring-divider" style={`--ring-size:${size}px`} aria-hidden="true">
+  <svg class="ring-divider__svg" viewBox="0 0 200 200" fill="none">
+    {
+      rings.map((r, i) => (
+        <ellipse
+          class="ring-divider__ring"
+          cx={r.cx}
+          cy={r.cy}
+          rx={r.rx}
+          ry={r.ry}
+          style={`--len:${r.len}; --i:${i}`}
+        />
+      ))
+    }
+  </svg>
+</div>
+
+<style>
+  .ring-divider {
+    display: flex;
+    justify-content: center;
+    padding-block: var(--space-5);
+    color: var(--color-accent-soft);
+  }
+  .ring-divider__svg {
+    width: var(--ring-size);
+    height: auto;
+    overflow: visible;
+  }
+  .ring-divider__ring {
+    stroke: currentColor;
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    /* 既定（JS無効/reduce時）は描き切った状態で見える */
+    stroke-dasharray: var(--len);
+    stroke-dashoffset: 0;
+  }
+  /* いちばん外側の輪だけ熾火色で“今の年”を灯す */
+  .ring-divider__ring:last-child {
+    stroke: var(--color-ember);
+    opacity: 0.9;
+  }
+
+  /* 動きを許容する環境では、入ってくる前は隠し、is-visible で内→外に描く */
+  @media (prefers-reduced-motion: no-preference) {
+    .js-reveal .ring-divider__ring {
+      stroke-dashoffset: var(--len);
+    }
+    .js-reveal .ring-divider.is-visible .ring-divider__ring {
+      animation: ring-draw 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      animation-delay: calc(var(--i) * 0.16s);
+    }
+  }
+  @keyframes ring-draw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+</style>

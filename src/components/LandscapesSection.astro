@@ -1,5 +1,7 @@
 ---
-// OUR LANDSCAPES：叩き案 B の巨大数字(37/07/21) × A の温度。
+// OUR LANDSCAPES（方向A：年輪）。
+// 各店舗を「写真に入っていく」没入カードに。暗幕(veil)＋粒子(grain)＋白文字、
+// 巨大数字は刻印風に写真へ。左の幹線＋年輪ノードで“一つずつ重なる輪”として連ねる。
 import { Image } from "astro:assets";
 import {
   useTranslations,
@@ -28,35 +30,58 @@ const featured = stores.filter((s) => s.featured);
 
     <ul class="landscapes__list">
       {
-        featured.map((s) => (
-          <li class="landscape">
-            <a class="landscape__link" href={localizedPath(`/stores/${s.slug}`, locale)}>
-              <span class="landscape__code">{s.code}</span>
-              <div class="landscape__meta">
-                <span class="landscape__name">{s.nameEn}</span>
-                <span class="landscape__area">{s.area[locale]}</span>
-                {s.role[locale] && (
-                  <span class="landscape__role">{s.role[locale]}</span>
-                )}
-                <span
-                  class={`badge ${s.status === "open" ? "badge--open" : "badge--coming"}`}
-                >
-                  {s.status === "open" ? t("status.open") : t("status.coming")}
+        featured.map((s) => {
+          const img = getImage(`stores/${s.slug}`);
+          return (
+            <li class="landscape">
+              <span class="landscape__rail" aria-hidden="true">
+                <span class="landscape__node">
+                  <svg viewBox="0 0 32 32" fill="none">
+                    <circle cx="16" cy="16" r="14" />
+                    <circle cx="16" cy="16" r="9" />
+                    <circle cx="16" cy="16" r="4.5" />
+                    <circle class="landscape__node-core" cx="16" cy="16" r="1.6" />
+                  </svg>
                 </span>
-              </div>
-              {(() => {
-                const img = getImage(`stores/${s.slug}`);
-                return img ? (
-                  <Image class="landscape__media landscape__img" src={img} alt="" widths={[400, 800]} sizes="(max-width: 720px) 100vw, 32vw" />
-                ) : (
-                  <div class="landscape__media ph" aria-hidden="true">
-                    {s.nameEn}
+              </span>
+
+              <a class="lcard" href={localizedPath(`/stores/${s.slug}`, locale)}>
+                <div class="lcard__media">
+                  {img ? (
+                    <Image
+                      class="lcard__img"
+                      src={img}
+                      alt=""
+                      widths={[600, 1000, 1400]}
+                      sizes="(max-width: 720px) 100vw, 64vw"
+                    />
+                  ) : (
+                    <div class="lcard__img ph" aria-hidden="true">
+                      {s.nameEn}
+                    </div>
+                  )}
+                  <span class="lcard__veil" aria-hidden="true" />
+                  <span class="lcard__grain" aria-hidden="true" />
+
+                  <span class="lcard__code">{s.code}</span>
+
+                  <div class="lcard__body">
+                    <span class="lcard__name">{s.nameEn}</span>
+                    <span class="lcard__area">
+                      {s.area[locale]}
+                      {s.role[locale] && <em class="lcard__role"> — {s.role[locale]}</em>}
+                    </span>
+                    <span
+                      class={`badge ${s.status === "open" ? "badge--open" : "badge--coming"}`}
+                    >
+                      {s.status === "open" ? t("status.open") : t("status.coming")}
+                    </span>
                   </div>
-                );
-              })()}
-            </a>
-          </li>
-        ))
+                </div>
+              </a>
+            </li>
+          );
+        })
       }
     </ul>
   </div>
@@ -68,88 +93,179 @@ const featured = stores.filter((s) => s.featured);
     flex-direction: column;
   }
   .landscape {
-    border-top: 1px solid var(--color-line);
-  }
-  .landscape:last-child {
-    border-bottom: 1px solid var(--color-line);
-  }
-  .landscape__link {
     display: grid;
-    grid-template-columns: auto 1fr minmax(180px, 32%);
-    align-items: center;
+    grid-template-columns: 56px 1fr;
     gap: var(--space-3);
-    padding-block: var(--space-3);
-    transition: background var(--transition);
+    padding-block: var(--space-4);
   }
-  .landscape__link:hover {
-    background: var(--color-bg-alt);
+
+  /* --- 左の幹線＋年輪ノード（時間軸） --- */
+  .landscape__rail {
+    position: relative;
+    color: var(--color-line);
   }
-  .landscape__code {
-    font-family: var(--font-en-display);
-    font-size: var(--fs-numeral);
-    font-weight: 700;
-    line-height: 0.9;
-    letter-spacing: -0.02em;
+  .landscape__rail::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    transform: translateX(-50%);
+    background: currentColor;
   }
-  .landscape__meta {
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
+  .landscape:first-child .landscape__rail::before {
+    top: 50%;
   }
-  .landscape__name {
-    font-size: var(--fs-h2);
-    font-weight: 600;
-    letter-spacing: 0.06em;
+  .landscape:last-child .landscape__rail::before {
+    bottom: 50%;
   }
-  .landscape__area {
-    color: var(--color-ink-soft);
-    font-size: var(--fs-small);
+  .landscape__node {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 34px;
+    height: 34px;
+    color: var(--color-accent-soft);
+    background: var(--color-bg);
+    border-radius: 50%;
+    padding: 1px;
+    transition: color var(--transition);
+    z-index: 1;
   }
-  .landscape__role {
-    font-size: var(--fs-small);
-    letter-spacing: 0.12em;
-    color: var(--color-accent);
+  .landscape__node svg {
+    width: 100%;
+    height: 100%;
+    stroke: currentColor;
+    stroke-width: 1.3;
   }
-  .landscape__media {
-    aspect-ratio: 16 / 10;
+  .landscape__node-core {
+    fill: var(--color-ember);
+    stroke: none;
   }
-  .landscape__img {
+  .landscape:hover .landscape__node {
+    color: var(--color-ember);
+  }
+
+  /* --- 没入カード --- */
+  .lcard {
+    display: block;
+  }
+  .lcard__media {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: var(--color-overlay);
+    isolation: isolate;
+  }
+  .lcard__img {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
+    /* 記憶っぽく、ほんの少し色を抜いて暖かく */
+    filter: saturate(0.9) contrast(1.02);
+    transition: transform 6s ease-out;
+    will-change: transform;
+  }
+  .lcard:hover .lcard__img {
+    transform: scale(1.05);
+  }
+  /* 暗幕：下と左を濃く（白文字を読みやすく） */
+  .lcard__veil {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(
+        180deg,
+        rgba(26, 23, 20, 0.1) 0%,
+        rgba(26, 23, 20, 0) 32%,
+        rgba(26, 23, 20, 0.4) 64%,
+        rgba(26, 23, 20, 0.84) 100%
+      ),
+      linear-gradient(90deg, rgba(26, 23, 20, 0.45) 0%, rgba(26, 23, 20, 0) 55%);
+  }
+  /* 粒子：フィルム風グレイン */
+  .lcard__grain {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode: overlay;
+    opacity: 0.07;
+    pointer-events: none;
+  }
+
+  .lcard__code {
+    position: absolute;
+    top: clamp(0.5rem, 2vw, 1.4rem);
+    left: clamp(0.75rem, 2.5vw, 1.8rem);
+    font-family: var(--font-en-display);
+    font-size: var(--fs-numeral);
+    font-weight: 700;
+    line-height: 0.85;
+    letter-spacing: -0.03em;
+    color: rgba(255, 255, 255, 0.94);
+    /* 刻印風 */
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.3), 0 3px 22px rgba(0, 0, 0, 0.5);
+    z-index: 2;
+  }
+  .lcard__body {
+    position: absolute;
+    left: clamp(0.9rem, 2.6vw, 2rem);
+    bottom: clamp(0.9rem, 2.6vw, 1.8rem);
+    right: clamp(0.9rem, 2.6vw, 2rem);
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    color: #fff;
+    z-index: 2;
+  }
+  .lcard__name {
+    font-size: var(--fs-h2);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+  }
+  .lcard__area {
+    font-size: var(--fs-small);
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .lcard__role {
+    font-style: normal;
+    color: var(--color-accent-soft);
+    letter-spacing: 0.1em;
   }
   .badge {
     align-self: flex-start;
-    margin-top: 0.2rem;
+    margin-top: 0.3rem;
     font-size: 0.7rem;
     letter-spacing: 0.16em;
-    padding: 0.2rem 0.6rem;
-    border: 1px solid currentColor;
+    padding: 0.22rem 0.7rem;
     border-radius: 999px;
+    border: 1px solid transparent;
   }
   .badge--open {
-    color: var(--color-accent);
+    background: var(--color-ember);
+    color: #fff;
   }
   .badge--coming {
-    color: var(--color-ink-soft);
+    color: rgba(255, 255, 255, 0.85);
+    border-color: rgba(255, 255, 255, 0.5);
   }
 
   @media (max-width: 720px) {
-    .landscape__link {
-      grid-template-columns: auto 1fr;
-      grid-template-areas:
-        "code meta"
-        "media media";
+    .landscape {
+      grid-template-columns: 36px 1fr;
+      gap: var(--space-2);
     }
-    .landscape__code {
-      grid-area: code;
+    .landscape__node {
+      width: 26px;
+      height: 26px;
     }
-    .landscape__meta {
-      grid-area: meta;
-    }
-    .landscape__media {
-      grid-area: media;
-      aspect-ratio: 16 / 9;
+    .lcard__media {
+      aspect-ratio: 4 / 3;
     }
   }
 </style>
