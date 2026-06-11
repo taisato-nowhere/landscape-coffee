@@ -12,6 +12,11 @@
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
+  /* 横はみ出しでの横スクロール（サイドスライド）を防ぐ。clip は sticky を壊さない */
+  overflow-x: clip;
+}
+body {
+  overflow-x: clip;
 }
 body {
   font-family: var(--font-sans);
