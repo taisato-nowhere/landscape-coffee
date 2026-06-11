@@ -13,7 +13,7 @@ export const ui = {
     "nav.journal": "JOURNAL",
     "nav.contact": "CONTACT",
     "nav.cart": "CART",
-    "hero.title": "思い出を、重ねられる場所",
+    "hero.title": "思い出を、重ねられる場所を",
     "hero.subtitle": "A Place to Layer Memories.",
     "hero.scroll": "SCROLL",
     "brand.body":
