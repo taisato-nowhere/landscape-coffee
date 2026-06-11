@@ -1,6 +1,8 @@
 ---
+import { Image } from "astro:assets";
 import { useTranslations, localizedPath, type Locale } from "../i18n/ui";
 import { news } from "../data/content";
+import { getImage } from "../lib/images";
 
 interface Props {
   locale: Locale;
@@ -23,6 +25,16 @@ const t = useTranslations(locale);
         news.map((n) => (
           <li class="news__item">
             <a href={localizedPath(`/news/${n.slug}`, locale)}>
+              {(() => {
+                const img = getImage(`news/${n.slug}`);
+                return img ? (
+                  <Image class="news__thumb news__img" src={img} alt="" widths={[400, 800]} sizes="(max-width: 720px) 100vw, 33vw" />
+                ) : (
+                  <div class="news__thumb ph ph--wide" aria-hidden="true">
+                    {n.category}
+                  </div>
+                );
+              })()}
               <span class="news__date">{n.date}</span>
               <span class="news__cat">{n.category}</span>
               <span class="news__title">{n.title[locale]}</span>
@@ -44,6 +56,14 @@ const t = useTranslations(locale);
     display: flex;
     flex-direction: column;
     gap: 0.4rem;
+  }
+  .news__thumb {
+    margin-bottom: var(--space-1);
+  }
+  .news__img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
   }
   .news__date {
     font-size: var(--fs-small);
