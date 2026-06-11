@@ -1,7 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import NewsDetailBody from "../../components/pages/NewsDetailBody.astro";
-import { news } from "../../data/content";
+import { news } from "../../contents/content";
 
 export function getStaticPaths() {
   return news.map((n) => ({ params: { slug: n.slug }, props: { item: n } }));

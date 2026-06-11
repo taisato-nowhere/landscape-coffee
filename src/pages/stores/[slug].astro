@@ -1,7 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import StoreDetailBody from "../../components/pages/StoreDetailBody.astro";
-import { stores } from "../../data/content";
+import { stores } from "../../contents/content";
 
 export function getStaticPaths() {
   return stores.map((s) => ({ params: { slug: s.slug }, props: { store: s } }));

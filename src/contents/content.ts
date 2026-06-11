@@ -1,6 +1,6 @@
 // モックコンテンツ（後で microCMS / Shopify のAPI取得に差し替える）。
 // 多言語フィールドは { ja, en } で保持。
-import type { Locale } from "../i18n/ui";
+import type { Locale } from "../text/ui";
 
 export type Localized = Record<Locale, string>;
 

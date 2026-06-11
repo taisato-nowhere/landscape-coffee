@@ -1,4 +1,4 @@
-// UI文言（ロケール別）。コンテンツ本文(stores/news等)は src/data/content.ts 側で多言語化。
+// UI文言（ロケール別）。コンテンツ本文(stores/news等)は src/contents/content.ts 側で多言語化。
 export type Locale = "ja" | "en";
 
 export const locales: Locale[] = ["ja", "en"];
