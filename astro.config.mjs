@@ -3,9 +3,9 @@ import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
-  // 独自ドメイン（apex）でルート配信。public/CNAME と対。
-  site: 'https://landscapecoffee.jp',
-  base: '/',
+  // GitHub Pages（プロジェクトサイト）用。独自ドメインは後で再設定（CNAME＋base:'/'）。
+  site: 'https://taisato-nowhere.github.io',
+  base: '/landscape-coffee',
   i18n: {
     defaultLocale: 'ja',
     locales: ['ja', 'en'],
