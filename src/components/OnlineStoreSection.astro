@@ -1,12 +1,14 @@
 ---
 // ONLINE STORE：叩き案 C の物販（LANDSCAPE / 37 / 07 / 21 BLEND）。
 // 後で Shopify Storefront API の商品に差し替え。
+import { Image } from "astro:assets";
 import {
   useTranslations,
   localizedPath,
   type Locale,
 } from "../i18n/ui";
 import { products, yen } from "../data/content";
+import { getImage } from "../lib/images";
 
 interface Props {
   locale: Locale;
@@ -29,9 +31,16 @@ const t = useTranslations(locale);
         products.map((pr) => (
           <li class="product">
             <a href={localizedPath(`/shop/${pr.handle}`, locale)}>
-              <div class="product__media ph ph--square" aria-hidden="true">
-                <span class="product__bag">{pr.name[locale]}</span>
-              </div>
+              {(() => {
+                const img = getImage(`products/${pr.handle}`);
+                return img ? (
+                  <Image class="product__media product__img" src={img} alt="" widths={[300, 600]} sizes="(max-width: 900px) 50vw, 25vw" />
+                ) : (
+                  <div class="product__media ph ph--square" aria-hidden="true">
+                    <span class="product__bag">{pr.name[locale]}</span>
+                  </div>
+                );
+              })()}
               <p class="product__name">{pr.name[locale]}</p>
               <p class="product__meta">
                 <span>{pr.weight}</span>
@@ -56,6 +65,12 @@ const t = useTranslations(locale);
     display: grid;
     place-items: center;
     margin-bottom: var(--space-2);
+  }
+  .product__img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    background: none;
   }
   .product__bag {
     font-size: var(--fs-small);

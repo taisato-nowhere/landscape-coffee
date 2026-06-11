@@ -1,19 +1,28 @@
 ---
 // ヒーロー：叩き案 A（写真主役＋「思い出の交差点」コピー）。
 // 実写真が入るまではプレースホルダ。確定後 .hero__media を <img>/<Image> に差し替え。
+import { Image } from "astro:assets";
 import { useTranslations, type Locale } from "../i18n/ui";
+import { getImage } from "../lib/images";
 
 interface Props {
   locale: Locale;
 }
 const { locale } = Astro.props;
 const t = useTranslations(locale);
+const heroImg = getImage("hero/main");
 ---
 
 <section class="hero">
-  <div class="hero__media ph ph--wide" role="img" aria-label="Kominka cafe interior">
-    古民家の店内写真（プレースホルダ）
-  </div>
+  {
+    heroImg ? (
+      <Image class="hero__media hero__img" src={heroImg} alt="" widths={[768, 1280, 2000]} sizes="100vw" />
+    ) : (
+      <div class="hero__media ph ph--wide" role="img" aria-label="Kominka cafe interior">
+        古民家の店内写真（プレースホルダ）
+      </div>
+    )
+  }
 
   <div class="container hero__overlay">
     <p class="eyebrow hero__eyebrow">LANDSCAPE COFFEE</p>
@@ -32,6 +41,11 @@ const t = useTranslations(locale);
   .hero__media {
     aspect-ratio: 16 / 10;
     min-height: 60vh;
+  }
+  .hero__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
   @media (min-width: 768px) {
     .hero__media {
