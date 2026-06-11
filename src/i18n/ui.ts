@@ -13,8 +13,8 @@ export const ui = {
     "nav.journal": "JOURNAL",
     "nav.contact": "CONTACT",
     "nav.cart": "CART",
-    "hero.title": "思い出の交差点",
-    "hero.subtitle": "A Place Where Memories Meet.",
+    "hero.title": "思い出を、重ねられる場所",
+    "hero.subtitle": "A Place to Layer Memories.",
     "hero.scroll": "SCROLL",
     "brand.body":
       "Landscape は、景色だけではありません。\n人との出会い、街の記憶、土地の文化、未来への邂逅。\n私たちはそれらすべてを、Landscape と呼びます。",
@@ -39,8 +39,8 @@ export const ui = {
     "nav.journal": "JOURNAL",
     "nav.contact": "CONTACT",
     "nav.cart": "CART",
-    "hero.title": "A Crossroads of Memories",
-    "hero.subtitle": "A Place Where Memories Meet.",
+    "hero.title": "A Place to Layer Memories",
+    "hero.subtitle": "Memories, ring by ring.",
     "hero.scroll": "SCROLL",
     "brand.body":
       "Landscape is not only the scenery.\nIt is the people we meet, the memory of a town, the culture of a place, and the encounters yet to come.\nWe call all of it Landscape.",
