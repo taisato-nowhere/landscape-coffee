@@ -1,0 +1,137 @@
+---
+import Logo from "./Logo.astro";
+import { useTranslations, localizedPath, type Locale } from "../i18n/ui";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+const p = (path: string) => localizedPath(path, locale);
+
+const nav = [
+  { href: p("/about"), label: t("nav.about") },
+  { href: p("/stores"), label: t("nav.stores") },
+  { href: p("/shop"), label: t("nav.shop") },
+  { href: p("/news"), label: t("nav.news") },
+  { href: p("/contact"), label: t("nav.contact") },
+];
+
+// 言語切替先（同一ページの別ロケール。ここではトップ固定の簡易版）
+const otherLocale: Locale = locale === "ja" ? "en" : "ja";
+const switchHref = localizedPath("/", otherLocale);
+---
+
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a href={p("/")} class="site-header__logo">
+      <Logo variant="horizontal" height={32} />
+    </a>
+
+    <nav class="site-header__nav" aria-label="Primary">
+      {nav.map((item) => <a href={item.href}>{item.label}</a>)}
+    </nav>
+
+    <div class="site-header__utils">
+      <a class="lang" href={switchHref} aria-label="Switch language">
+        <span class={locale === "ja" ? "is-active" : ""}>JA</span>
+        <span aria-hidden="true">/</span>
+        <span class={locale === "en" ? "is-active" : ""}>EN</span>
+      </a>
+      <a class="cart" href={p("/cart")} aria-label={t("nav.cart")}>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path
+            d="M6 7h12l-1 12H7L6 7Z M9 7a3 3 0 0 1 6 0"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        <span class="cart__count">0</span>
+      </a>
+      <button class="menu-toggle" aria-label="Menu" aria-expanded="false">
+        <span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--color-bg) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--color-line);
+  }
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    min-height: 72px;
+  }
+  .site-header__nav {
+    display: flex;
+    gap: var(--space-3);
+    font-size: var(--fs-small);
+    letter-spacing: 0.12em;
+    margin-inline: auto;
+  }
+  .site-header__nav a {
+    transition: color var(--transition);
+  }
+  .site-header__nav a:hover {
+    color: var(--color-accent);
+  }
+  .site-header__utils {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .lang {
+    font-size: var(--fs-small);
+    letter-spacing: 0.08em;
+    color: var(--color-ink-soft);
+    display: inline-flex;
+    gap: 0.25rem;
+  }
+  .lang .is-active {
+    color: var(--color-ink);
+    font-weight: 600;
+  }
+  .cart {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--color-ink);
+  }
+  .cart__count {
+    font-size: var(--fs-small);
+  }
+  .menu-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    padding: 6px;
+  }
+  .menu-toggle span {
+    width: 22px;
+    height: 1.6px;
+    background: var(--color-ink);
+    display: block;
+  }
+
+  @media (max-width: 900px) {
+    .site-header__nav {
+      display: none;
+    }
+    .menu-toggle {
+      display: flex;
+    }
+  }
+</style>

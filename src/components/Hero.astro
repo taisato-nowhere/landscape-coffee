@@ -1,0 +1,76 @@
+---
+// ヒーロー：叩き案 A（写真主役＋「思い出の交差点」コピー）。
+// 実写真が入るまではプレースホルダ。確定後 .hero__media を <img>/<Image> に差し替え。
+import { useTranslations, type Locale } from "../i18n/ui";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<section class="hero">
+  <div class="hero__media ph ph--wide" role="img" aria-label="Kominka cafe interior">
+    古民家の店内写真（プレースホルダ）
+  </div>
+
+  <div class="container hero__overlay">
+    <p class="eyebrow hero__eyebrow">LANDSCAPE COFFEE</p>
+    <h1 class="hero__title">{t("hero.title")}</h1>
+    <p class="hero__subtitle">{t("hero.subtitle")}</p>
+  </div>
+
+  <span class="hero__scroll" aria-hidden="true">{t("hero.scroll")}</span>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    isolation: isolate;
+  }
+  .hero__media {
+    aspect-ratio: 16 / 10;
+    min-height: 60vh;
+  }
+  @media (min-width: 768px) {
+    .hero__media {
+      aspect-ratio: 16 / 8;
+      min-height: 72vh;
+    }
+  }
+  .hero__overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--space-2);
+    color: var(--color-bg);
+    text-shadow: 0 1px 24px rgba(0, 0, 0, 0.35);
+  }
+  .hero__eyebrow {
+    color: color-mix(in srgb, var(--color-bg) 85%, transparent);
+  }
+  .hero__title {
+    font-family: var(--font-serif);
+    font-size: var(--fs-hero);
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    line-height: var(--lh-tight);
+  }
+  .hero__subtitle {
+    font-size: 1rem;
+    letter-spacing: 0.12em;
+  }
+  .hero__scroll {
+    position: absolute;
+    left: 50%;
+    bottom: var(--space-3);
+    transform: translateX(-50%);
+    writing-mode: vertical-rl;
+    font-size: var(--fs-small);
+    letter-spacing: 0.3em;
+    color: var(--color-bg);
+  }
+</style>

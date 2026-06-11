@@ -1,0 +1,97 @@
+---
+import Logo from "./Logo.astro";
+import { useTranslations, localizedPath, type Locale } from "../i18n/ui";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+const p = (path: string) => localizedPath(path, locale);
+
+const links = [
+  { href: p("/about"), label: t("nav.about") },
+  { href: p("/stores"), label: t("nav.stores") },
+  { href: p("/shop"), label: t("nav.shop") },
+  { href: p("/news"), label: t("nav.news") },
+  { href: p("/journal"), label: t("nav.journal") },
+  { href: p("/contact"), label: t("nav.contact") },
+];
+const year = 2026;
+---
+
+<footer class="site-footer">
+  <div class="container site-footer__inner">
+    <div class="site-footer__brand">
+      <Logo variant="stacked" reverse height={84} />
+      <p class="site-footer__tagline">{t("footer.tagline")}</p>
+    </div>
+
+    <nav class="site-footer__nav" aria-label="Footer">
+      {links.map((l) => <a href={l.href}>{l.label}</a>)}
+    </nav>
+
+    <div class="site-footer__social">
+      <a
+        href="https://www.instagram.com/landscape_coffee37/"
+        target="_blank"
+        rel="noopener"
+        aria-label="Instagram">Instagram</a
+      >
+      <a href={p("/contact")} aria-label="Mail">Mail</a>
+    </div>
+  </div>
+
+  <div class="container site-footer__legal">
+    <a href={p("/legal/tokushoho")}>特定商取引法に基づく表記</a>
+    <a href={p("/legal/privacy")}>プライバシーポリシー</a>
+    <span>© {year} LANDSCAPE COFFEE</span>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--color-ink);
+    color: var(--color-bg);
+    padding-block: var(--space-5) var(--space-3);
+    margin-top: var(--space-6);
+  }
+  .site-footer__inner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .site-footer__tagline {
+    margin-top: var(--space-2);
+    font-size: var(--fs-small);
+    color: color-mix(in srgb, var(--color-bg) 70%, transparent);
+  }
+  .site-footer__nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4rem var(--space-4);
+    font-size: var(--fs-small);
+    letter-spacing: 0.1em;
+  }
+  .site-footer__nav a:hover {
+    color: var(--color-accent-soft);
+  }
+  .site-footer__social {
+    display: flex;
+    gap: var(--space-2);
+    font-size: var(--fs-small);
+    letter-spacing: 0.1em;
+  }
+  .site-footer__legal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-5);
+    padding-top: var(--space-3);
+    border-top: 1px solid color-mix(in srgb, var(--color-bg) 20%, transparent);
+    font-size: var(--fs-small);
+    color: color-mix(in srgb, var(--color-bg) 60%, transparent);
+  }
+</style>

@@ -1,0 +1,52 @@
+/*
+ * デザイントークン（= サイトの「肌」）
+ * ----------------------------------------------------------------
+ * 色・余白・タイポはすべてここに集約する。
+ * A〜Eのどのデザイン案に寄せる場合も、原則このファイルの値を
+ * 書き換えるだけで全体の見た目が切り替わる設計。
+ * （現在の既定値は A / Berth Coffee 寄りの編集トーン）
+ */
+:root {
+  /* --- 配色：生成り × 墨 × 温かいブラウン --- */
+  --color-bg: #f6f3ec;          /* 生成り／オフホワイト背景 */
+  --color-bg-alt: #efe9dd;      /* セクションの差し色背景 */
+  --color-surface: #ffffff;     /* カード等 */
+  --color-ink: #1c1a17;         /* 墨色（ほぼ黒）テキスト */
+  --color-ink-soft: #5c554b;    /* 補助テキスト */
+  --color-line: #ddd5c7;        /* 罫線 */
+  --color-accent: #7a5230;      /* コーヒーブラウンのアクセント */
+  --color-accent-soft: #b08b62; /* アクセント淡 */
+
+  /* --- タイポグラフィ --- */
+  --font-sans: "Helvetica Neue", "Hiragino Kaku Gothic ProN", "Hiragino Sans",
+    "Noto Sans JP", "Yu Gothic", sans-serif;
+  --font-serif: "Times New Roman", "Hiragino Mincho ProN", "Yu Mincho",
+    "Noto Serif JP", serif;
+  --font-en-display: "Helvetica Neue", Arial, sans-serif; /* 数字/英字の見出し用 */
+
+  --fs-hero: clamp(2rem, 6vw, 4.5rem);
+  --fs-h1: clamp(1.6rem, 4vw, 3rem);
+  --fs-h2: clamp(1.3rem, 3vw, 2rem);
+  --fs-numeral: clamp(3.5rem, 12vw, 9rem); /* 37 / 07 / 21 の巨大数字 */
+  --fs-body: 1rem;
+  --fs-small: 0.8125rem;
+
+  --lh-tight: 1.15;
+  --lh-base: 1.8; /* 和文の可読性のため広め */
+
+  /* --- レイアウト・余白 --- */
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2.5rem;
+  --space-5: 4rem;
+  --space-6: 6rem;
+  --space-7: 9rem; /* 編集的な大きい余白 */
+
+  --maxw: 1200px;
+  --maxw-narrow: 760px;
+  --gutter: clamp(1.25rem, 4vw, 3rem);
+
+  --radius: 2px; /* ほぼ角張った上品さ */
+  --transition: 0.4s ease;
+}

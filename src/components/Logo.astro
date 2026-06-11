@@ -1,0 +1,36 @@
+---
+// 公式ロゴを画像で読み込む。
+// ファイルは public/logo/ に配置:
+//   - landscape-coffee-horizontal.svg （横組み：マーク左＋ワードマーク右）
+//   - landscape-coffee-stacked.svg    （縦組み：マーク上＋ワードマーク下）
+// ※ 現状は「貼られた画像に寄せた暫定SVG」。公式書き出し(SVG推奨/透過PNG可)で同名上書きすれば差し替わる。
+// reverse=true で暗い背景用に白へ反転（透過背景前提）。
+interface Props {
+  variant?: "horizontal" | "stacked";
+  reverse?: boolean;
+  height?: number;
+}
+import { withBase } from "../i18n/ui";
+const { variant = "horizontal", reverse = false, height = 36 } = Astro.props;
+const src = withBase(`/logo/landscape-coffee-${variant}.svg`);
+---
+
+<img
+  class:list={["logo", { "logo--reverse": reverse }]}
+  src={src}
+  alt="LANDSCAPE COFFEE"
+  height={height}
+  style={`height:${height}px`}
+  decoding="async"
+/>
+
+<style>
+  .logo {
+    display: block;
+    width: auto;
+  }
+  /* 透過背景の黒ロゴを、暗い背景用に白へ */
+  .logo--reverse {
+    filter: invert(1) brightness(2);
+  }
+</style>

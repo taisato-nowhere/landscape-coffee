@@ -1,0 +1,73 @@
+---
+import { useTranslations, localizedPath, type Locale } from "../i18n/ui";
+import { news } from "../data/content";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<section class="section news">
+  <div class="container">
+    <div class="section-head">
+      <h2>{t("news.title")}</h2>
+      <a class="link-more" href={localizedPath("/news", locale)}>
+        {t("news.more")} →
+      </a>
+    </div>
+
+    <ul class="news__list">
+      {
+        news.map((n) => (
+          <li class="news__item">
+            <a href={localizedPath(`/news/${n.slug}`, locale)}>
+              <span class="news__date">{n.date}</span>
+              <span class="news__cat">{n.category}</span>
+              <span class="news__title">{n.title[locale]}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .news__list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-4);
+  }
+  .news__item a {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .news__date {
+    font-size: var(--fs-small);
+    color: var(--color-ink-soft);
+    letter-spacing: 0.06em;
+  }
+  .news__cat {
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+    color: var(--color-accent);
+  }
+  .news__title {
+    font-size: 1.02rem;
+    line-height: 1.6;
+    transition: color var(--transition);
+  }
+  .news__item a:hover .news__title {
+    color: var(--color-accent);
+  }
+
+  @media (max-width: 720px) {
+    .news__list {
+      grid-template-columns: 1fr;
+      gap: var(--space-3);
+    }
+  }
+</style>

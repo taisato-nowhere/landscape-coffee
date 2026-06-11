@@ -1,0 +1,42 @@
+---
+import { useTranslations, localizedPath, type Locale } from "../i18n/ui";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+const body = t("brand.body").split("\n");
+---
+
+<section class="section brand">
+  <div class="container container--narrow brand__inner">
+    <p class="eyebrow">ABOUT LANDSCAPE</p>
+    <p class="brand__body">
+      {body.map((line) => <span>{line}</span>)}
+    </p>
+    <a class="link-more" href={localizedPath("/about", locale)}>
+      {t("brand.more")} →
+    </a>
+  </div>
+</section>
+
+<style>
+  .brand {
+    text-align: center;
+  }
+  .brand__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .brand__body {
+    font-family: var(--font-serif);
+    font-size: clamp(1.05rem, 2.4vw, 1.4rem);
+    line-height: 2.2;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+</style>

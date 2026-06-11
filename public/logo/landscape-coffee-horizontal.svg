@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 280" fill="none" role="img" aria-label="LANDSCAPE COFFEE">
+  <!-- ※暫定SVG（公式書き出しで上書き想定）。年輪マーク（円相＝外周はあえて開く） -->
+  <g transform="translate(140 138) rotate(-18)" stroke="#111" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M6 -104 C66 -100 112 -54 110 8 C108 70 60 110 -6 108 C-74 106 -116 56 -112 -8 C-108 -66 -64 -104 4 -106" stroke-width="9"/>
+    <ellipse cx="-2" cy="2" rx="86" ry="80" stroke-width="8" transform="rotate(4)"/>
+    <ellipse cx="-1" cy="3" rx="62" ry="56" stroke-width="8" transform="rotate(-3)"/>
+    <ellipse cx="0" cy="3" rx="38" ry="33" stroke-width="8" transform="rotate(6)"/>
+    <path d="M-16 4 C-10 -12 16 -12 18 2 C20 14 -4 18 -14 8" stroke-width="8"/>
+  </g>
+  <text x="290" y="128" font-family="'Arial Black','Helvetica Neue',Helvetica,sans-serif" font-weight="900" font-size="78" letter-spacing="-1" fill="#111">LANDSCAPE</text>
+  <text x="290" y="210" font-family="'Arial Black','Helvetica Neue',Helvetica,sans-serif" font-weight="900" font-size="78" letter-spacing="-1" fill="#111">COFFEE</text>
+</svg>

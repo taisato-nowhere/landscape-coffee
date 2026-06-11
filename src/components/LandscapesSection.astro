@@ -1,0 +1,141 @@
+---
+// OUR LANDSCAPES：叩き案 B の巨大数字(37/07/21) × A の温度。
+import {
+  useTranslations,
+  localizedPath,
+  type Locale,
+} from "../i18n/ui";
+import { stores } from "../data/content";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+const featured = stores.filter((s) => s.featured);
+---
+
+<section class="section landscapes">
+  <div class="container">
+    <div class="section-head">
+      <h2>{t("landscapes.title")}</h2>
+      <a class="link-more" href={localizedPath("/stores", locale)}>
+        {t("landscapes.more")} →
+      </a>
+    </div>
+
+    <ul class="landscapes__list">
+      {
+        featured.map((s) => (
+          <li class="landscape">
+            <a class="landscape__link" href={localizedPath(`/stores/${s.slug}`, locale)}>
+              <span class="landscape__code">{s.code}</span>
+              <div class="landscape__meta">
+                <span class="landscape__name">{s.nameEn}</span>
+                <span class="landscape__area">{s.area[locale]}</span>
+                {s.role[locale] && (
+                  <span class="landscape__role">{s.role[locale]}</span>
+                )}
+                <span
+                  class={`badge ${s.status === "open" ? "badge--open" : "badge--coming"}`}
+                >
+                  {s.status === "open" ? t("status.open") : t("status.coming")}
+                </span>
+              </div>
+              <div class="landscape__media ph" aria-hidden="true">
+                {s.nameEn}
+              </div>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .landscapes__list {
+    display: flex;
+    flex-direction: column;
+  }
+  .landscape {
+    border-top: 1px solid var(--color-line);
+  }
+  .landscape:last-child {
+    border-bottom: 1px solid var(--color-line);
+  }
+  .landscape__link {
+    display: grid;
+    grid-template-columns: auto 1fr minmax(180px, 32%);
+    align-items: center;
+    gap: var(--space-3);
+    padding-block: var(--space-3);
+    transition: background var(--transition);
+  }
+  .landscape__link:hover {
+    background: var(--color-bg-alt);
+  }
+  .landscape__code {
+    font-family: var(--font-en-display);
+    font-size: var(--fs-numeral);
+    font-weight: 700;
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+  }
+  .landscape__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .landscape__name {
+    font-size: var(--fs-h2);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+  }
+  .landscape__area {
+    color: var(--color-ink-soft);
+    font-size: var(--fs-small);
+  }
+  .landscape__role {
+    font-size: var(--fs-small);
+    letter-spacing: 0.12em;
+    color: var(--color-accent);
+  }
+  .landscape__media {
+    aspect-ratio: 16 / 10;
+  }
+  .badge {
+    align-self: flex-start;
+    margin-top: 0.2rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+    padding: 0.2rem 0.6rem;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+  }
+  .badge--open {
+    color: var(--color-accent);
+  }
+  .badge--coming {
+    color: var(--color-ink-soft);
+  }
+
+  @media (max-width: 720px) {
+    .landscape__link {
+      grid-template-columns: auto 1fr;
+      grid-template-areas:
+        "code meta"
+        "media media";
+    }
+    .landscape__code {
+      grid-area: code;
+    }
+    .landscape__meta {
+      grid-area: meta;
+    }
+    .landscape__media {
+      grid-area: media;
+      aspect-ratio: 16 / 9;
+    }
+  }
+</style>

@@ -1,0 +1,74 @@
+---
+import { useTranslations, localizedPath, type Locale } from "../i18n/ui";
+import { journal } from "../data/content";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<section class="section journal">
+  <div class="container">
+    <div class="section-head">
+      <h2>{t("journal.title")}</h2>
+      <a class="link-more" href={localizedPath("/journal", locale)}>
+        {t("journal.more")} →
+      </a>
+    </div>
+
+    <ul class="journal__grid">
+      {
+        journal.map((j) => (
+          <li class="journal__card">
+            <a href={localizedPath(`/journal/${j.slug}`, locale)}>
+              <div class="journal__media ph ph--wide" aria-hidden="true">
+                {j.category}
+              </div>
+              <span class="journal__cat">{j.category}</span>
+              <span class="journal__date">{j.date}</span>
+              <p class="journal__title">{j.title[locale]}</p>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .journal__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-4);
+  }
+  .journal__card a {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .journal__media {
+    margin-bottom: var(--space-1);
+  }
+  .journal__cat {
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+    color: var(--color-accent);
+  }
+  .journal__date {
+    font-size: var(--fs-small);
+    color: var(--color-ink-soft);
+  }
+  .journal__title {
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    line-height: 1.7;
+  }
+
+  @media (max-width: 720px) {
+    .journal__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

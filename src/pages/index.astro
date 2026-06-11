@@ -1,0 +1,25 @@
+---
+// 日本語トップ（/）
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Hero from "../components/Hero.astro";
+import BrandStatement from "../components/BrandStatement.astro";
+import LandscapesSection from "../components/LandscapesSection.astro";
+import NewsSection from "../components/NewsSection.astro";
+import JournalSection from "../components/JournalSection.astro";
+import OnlineStoreSection from "../components/OnlineStoreSection.astro";
+
+const locale = "ja" as const;
+---
+
+<BaseLayout
+  locale={locale}
+  title="LANDSCAPE COFFEE"
+  description="スペシャルティコーヒーを日常に届けるブランド「LANDSCAPE COFFEE（ランドスケープコーヒー）」。思い出の交差点を、いまここから。"
+>
+  <Hero locale={locale} />
+  <BrandStatement locale={locale} />
+  <LandscapesSection locale={locale} />
+  <NewsSection locale={locale} />
+  <JournalSection locale={locale} />
+  <OnlineStoreSection locale={locale} />
+</BaseLayout>
