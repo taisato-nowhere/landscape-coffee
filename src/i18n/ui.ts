@@ -14,7 +14,7 @@ export const ui = {
     "nav.contact": "CONTACT",
     "nav.cart": "CART",
     "hero.title": "思い出を、重ねられる場所を",
-    "hero.subtitle": "A Place to Layer Memories.",
+    "hero.subtitle": "Memories, ring by ring.",
     "hero.scroll": "SCROLL",
     "brand.body":
       "Landscape は、景色だけではありません。\n人との出会い、街の記憶、土地の文化、未来への邂逅。\n私たちはそれらすべてを、Landscape と呼びます。",
