@@ -2,7 +2,7 @@
 // 手描き風の線画イラスト（年輪ロゴと同じ手描きトーン）。currentColor で線色を継承。
 // name で motif を選択。装飾用途なので aria-hidden。
 interface Props {
-  name: "mountain" | "sea" | "cup" | "town" | "beans" | "ring";
+  name: "mountain" | "sea" | "cup" | "town" | "beans" | "ring" | "stump" | "coffee";
   width?: number;
   class?: string;
 }
@@ -76,6 +76,35 @@ const common = {
         <ellipse cx="32" cy="33" rx="17" ry="16" />
         <ellipse cx="32" cy="33" rx="10" ry="9" />
         <ellipse cx="32.5" cy="33" rx="4.5" ry="4" />
+      </svg>
+    )
+  }
+  {
+    name === "stump" && (
+      <svg viewBox="0 0 110 100" {...common} stroke-width="1.8">
+        {/* 切り株の年輪（手描き・少し歪んだ同心円） */}
+        <path d="M55 7 C73 6 90 21 95 42 C99 60 91 81 69 90 C50 98 24 90 16 67 C9 47 17 23 37 12 C43 8 48 7 55 7 Z" />
+        <path d="M53 18 C68 18 83 30 83 47 C83 63 70 77 51 76 C34 75 23 61 24 45 C25 30 39 19 53 18 Z" opacity="0.92" />
+        <path d="M52 30 C63 29 73 38 72 50 C71 61 60 68 49 65 C38 62 33 53 36 43 C38 35 44 31 52 30 Z" opacity="0.85" />
+        <path d="M51 41 C58 40 63 46 60 52 C57 58 49 58 45 53 C42 49 45 42 51 41 Z" opacity="0.8" />
+        {/* 中心と、外へ伸びる割れ */}
+        <path d="M53 8 C51 18 55 26 52 41" opacity="0.45" />
+        <path d="M60 51 C72 60 82 66 95 69" opacity="0.4" />
+      </svg>
+    )
+  }
+  {
+    name === "coffee" && (
+      <svg viewBox="0 0 86 88" {...common} stroke-width="1.8">
+        {/* 湯気 */}
+        <path d="M36 20 C32 15 40 12 36 6" opacity="0.7" />
+        <path d="M48 22 C44 17 52 14 48 8" opacity="0.7" />
+        {/* ドリッパー（円錐） */}
+        <path d="M21 38 L63 38 L52 60 L32 60 Z" />
+        <path d="M28 38 L42 60 M56 38 L42 60" opacity="0.4" />
+        {/* カップ */}
+        <path d="M30 62 L54 62 L51 78 C50 81 47 83 44 83 L40 83 C37 83 34 81 33 78 Z" />
+        <path d="M54 66 C63 65 64 76 55 77" />
       </svg>
     )
   }
