@@ -1,9 +1,10 @@
 ---
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import NewsDetailBody from "../../../components/pages/NewsDetailBody.astro";
-import { news } from "../../../contents/content";
+import { getNews } from "../../../lib/microcms";
 
-export function getStaticPaths() {
+export async function getStaticPaths() {
+  const news = await getNews();
   return news.map((n) => ({ params: { slug: n.slug }, props: { item: n } }));
 }
 

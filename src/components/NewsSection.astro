@@ -1,14 +1,15 @@
 ---
 import { Image } from "astro:assets";
 import { useTranslations, localizedPath, type Locale } from "../text/ui";
-import { news } from "../contents/content";
 import { getImage } from "../lib/images";
+import { getNews, cmsImage } from "../lib/microcms";
 
 interface Props {
   locale: Locale;
 }
 const { locale } = Astro.props;
 const t = useTranslations(locale);
+const news = (await getNews()).slice(0, 3);
 ---
 
 <section class="section news">
@@ -26,9 +27,12 @@ const t = useTranslations(locale);
           <li class="news__item">
             <a href={localizedPath(`/news/${n.slug}`, locale)}>
               {(() => {
-                const img = getImage(`news/${n.slug}`);
-                return img ? (
-                  <Image class="news__thumb news__img" src={img} alt="" widths={[400, 800]} sizes="(max-width: 720px) 100vw, 33vw" />
+                const local = getImage(`news/${n.slug}`);
+                if (n.thumbnailUrl) {
+                  return <img class="news__thumb news__img" src={cmsImage(n.thumbnailUrl, 800)} alt="" loading="lazy" />;
+                }
+                return local ? (
+                  <Image class="news__thumb news__img" src={local} alt="" widths={[400, 800]} sizes="(max-width: 720px) 100vw, 33vw" />
                 ) : (
                   <div class="news__thumb ph ph--wide" aria-hidden="true">
                     {n.category}

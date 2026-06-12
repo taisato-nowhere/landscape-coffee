@@ -2,13 +2,14 @@
 import { Image } from "astro:assets";
 import PageHeader from "../PageHeader.astro";
 import { localizedPath, type Locale } from "../../text/ui";
-import { news } from "../../contents/content";
 import { getImage } from "../../lib/images";
+import { getNews, cmsImage } from "../../lib/microcms";
 
 interface Props {
   locale: Locale;
 }
 const { locale } = Astro.props;
+const news = await getNews();
 const head = {
   ja: { title: "ニュース", subtitle: "出店・メディア・プロジェクトのお知らせ。" },
   en: { title: "News", subtitle: "Openings, media and projects." },
@@ -21,12 +22,14 @@ const head = {
   <ul class="news-list">
     {
       news.map((n) => {
-        const img = getImage(`news/${n.slug}`);
+        const local = getImage(`news/${n.slug}`);
         return (
           <li class="news-row">
             <a href={localizedPath(`/news/${n.slug}`, locale)}>
-              {img ? (
-                <Image class="news-row__thumb" src={img} alt="" widths={[240, 480]} sizes="200px" />
+              {n.thumbnailUrl ? (
+                <img class="news-row__thumb" src={cmsImage(n.thumbnailUrl, 480)} alt="" loading="lazy" />
+              ) : local ? (
+                <Image class="news-row__thumb" src={local} alt="" widths={[240, 480]} sizes="200px" />
               ) : (
                 <div class="news-row__thumb ph ph--wide" aria-hidden="true">{n.category}</div>
               )}

@@ -1,31 +1,40 @@
 ---
 import { Image } from "astro:assets";
 import { localizedPath, type Locale } from "../../text/ui";
-import { type NewsItem } from "../../contents/content";
 import { getImage } from "../../lib/images";
+import { type Article, cmsImage } from "../../lib/microcms";
 
 interface Props {
   locale: Locale;
-  item: NewsItem;
+  item: Article;
 }
 const { locale, item } = Astro.props;
-const img = getImage(`news/${item.slug}`);
+const local = getImage(`news/${item.slug}`);
 const back = locale === "ja" ? "ニュース一覧へ" : "All news";
-const body =
+const bodyHtml = item.body[locale] || item.body.ja;
+const placeholder =
   locale === "ja"
-    ? "（本文は準備中です。公開時に microCMS から配信されます。）"
-    : "(Article body coming soon — delivered from microCMS at launch.)";
+    ? "（本文は準備中です。microCMS で本文を入力すると、ここに表示されます。）"
+    : "(Article body coming soon — enter it in microCMS to show it here.)";
 ---
 
 <article class="container container--narrow news-article">
   <p class="news-article__meta"><span>{item.date}</span><span class="news-article__cat">{item.category}</span></p>
   <h1 class="news-article__title">{item.title[locale]}</h1>
   {
-    img && (
-      <Image class="news-article__img" src={img} alt="" widths={[760, 1280]} sizes="(max-width: 800px) 100vw, 760px" />
+    item.thumbnailUrl ? (
+      <img class="news-article__img" src={cmsImage(item.thumbnailUrl, 1280)} alt="" />
+    ) : local ? (
+      <Image class="news-article__img" src={local} alt="" widths={[760, 1280]} sizes="(max-width: 800px) 100vw, 760px" />
+    ) : null
+  }
+  {
+    bodyHtml ? (
+      <div class="news-article__body" set:html={bodyHtml} />
+    ) : (
+      <p class="news-article__body">{placeholder}</p>
     )
   }
-  <p class="news-article__body">{body}</p>
   <a class="link-more" href={localizedPath("/news", locale)}>← {back}</a>
 </article>
 
