@@ -2,14 +2,15 @@
 import { Image } from "astro:assets";
 import PageHeader from "../PageHeader.astro";
 import { useTranslations, localizedPath, type Locale } from "../../text/ui";
-import { stores } from "../../contents/content";
 import { getImage } from "../../lib/images";
+import { getStores, cmsImage } from "../../lib/microcms";
 
 interface Props {
   locale: Locale;
 }
 const { locale } = Astro.props;
 const t = useTranslations(locale);
+const stores = await getStores();
 const head = {
   ja: { title: "店舗", subtitle: "思い出の交差点を、各地に。" },
   en: { title: "Stores", subtitle: "Crossroads of memories, across Japan." },
@@ -22,13 +23,15 @@ const head = {
   <ul class="stores-grid">
     {
       stores.map((s) => {
-        const img = getImage(`stores/${s.slug}`);
+        const local = getImage(`stores/${s.slug}`);
         const open = s.status === "open";
         return (
           <li class="store-card">
             <a href={localizedPath(`/stores/${s.slug}`, locale)}>
-              {img ? (
-                <Image class="store-card__img" src={img} alt="" widths={[400, 800]} sizes="(max-width: 720px) 100vw, 50vw" />
+              {s.thumbnailUrl ? (
+                <img class="store-card__img" src={cmsImage(s.thumbnailUrl, 800)} alt="" loading="lazy" />
+              ) : local ? (
+                <Image class="store-card__img" src={local} alt="" widths={[400, 800]} sizes="(max-width: 720px) 100vw, 50vw" />
               ) : (
                 <div class="store-card__img ph ph--wide" aria-hidden="true">{s.nameEn}</div>
               )}

@@ -1,53 +1,36 @@
 ---
 import { Image } from "astro:assets";
 import { useTranslations, localizedPath, type Locale } from "../../text/ui";
-import { type Store } from "../../contents/content";
 import { getImage } from "../../lib/images";
+import { type StoreEntry, cmsImage } from "../../lib/microcms";
 import Illustration from "../Illustration.astro";
 
 interface Props {
   locale: Locale;
-  store: Store;
+  store: StoreEntry;
 }
 const { locale, store } = Astro.props;
 
-// 店舗ごとの手描きモチーフ（海沿い=sea / 街=town / 山=mountain）
-const motif = {
-  sakaide: "sea",
-  takamatsu: "sea",
-  motomiya: "town",
-  takayama: "mountain",
-}[store.slug] as "sea" | "town" | "mountain" | undefined;
 const t = useTranslations(locale);
-const img = getImage(`stores/${store.slug}`);
+const local = getImage(`stores/${store.slug}`);
 const open = store.status === "open";
 
-// 仮の店舗詳細（後で microCMS に差し替え）
-const details: Record<string, { hours: string; address: Record<Locale, string>; tel: string; parking: Record<Locale, string> }> = {
-  sakaide: {
-    hours: "11:00–19:00 / 月曜定休",
-    address: { ja: "香川県坂出市（詳細は準備中）", en: "Sakaide, Kagawa (details coming)" },
-    tel: "—",
-    parking: { ja: "近隣駐車場あり", en: "Nearby parking available" },
-  },
-  motomiya: {
-    hours: "11:00–19:00（夜営業：金・土）/ 定休日準備中",
-    address: { ja: "福島県本宮市・JR本宮駅徒歩1分", en: "1 min from JR Motomiya Sta., Fukushima" },
-    tel: "—",
-    parking: { ja: "店舗駐車場3台＋本宮駅前無料駐車場", en: "3 spaces + free station parking" },
-  },
-};
-const d = details[store.slug];
+const hasInfo =
+  open && Boolean(store.hours || store.address[locale] || store.tel || store.parking[locale]);
+const bodyHtml = store.body[locale] || store.body.ja;
+
 const label = {
-  ja: { hours: "営業時間", address: "所在地", tel: "電話", parking: "駐車場", menu: "メニュー", soon: "近日オープン予定。最新情報はニュース・SNSでお知らせします。", back: "店舗一覧へ" },
-  en: { hours: "Hours", address: "Address", tel: "Tel", parking: "Parking", menu: "Menu", soon: "Opening soon. Follow our news and social for updates.", back: "All stores" },
+  ja: { hours: "営業時間", address: "所在地", tel: "電話", parking: "駐車場", soon: "近日オープン予定。最新情報はニュース・SNSでお知らせします。", back: "店舗一覧へ" },
+  en: { hours: "Hours", address: "Address", tel: "Tel", parking: "Parking", soon: "Opening soon. Follow our news and social for updates.", back: "All stores" },
 }[locale];
 ---
 
 <section class="store-detail">
   {
-    img ? (
-      <Image class="store-detail__hero" src={img} alt="" widths={[768, 1280, 2000]} sizes="100vw" />
+    store.thumbnailUrl ? (
+      <img class="store-detail__hero" src={cmsImage(store.thumbnailUrl, 2000)} alt="" />
+    ) : local ? (
+      <Image class="store-detail__hero" src={local} alt="" widths={[768, 1280, 2000]} sizes="100vw" />
     ) : (
       <div class="store-detail__hero ph ph--wide" aria-hidden="true">{store.nameEn}</div>
     )
@@ -65,35 +48,24 @@ const label = {
       </span>
     </div>
 
-    {motif && (
-      <div class="illust-divider"><Illustration name={motif} width={140} /></div>
+    {store.motif && (
+      <div class="illust-divider"><Illustration name={store.motif} width={140} /></div>
     )}
 
     {
-      open && d ? (
+      hasInfo ? (
         <dl class="store-detail__info">
-          <div><dt>{label.hours}</dt><dd>{d.hours}</dd></div>
-          <div><dt>{label.address}</dt><dd>{d.address[locale]}</dd></div>
-          <div><dt>{label.tel}</dt><dd>{d.tel}</dd></div>
-          <div><dt>{label.parking}</dt><dd>{d.parking[locale]}</dd></div>
+          {store.hours && <div><dt>{label.hours}</dt><dd>{store.hours}</dd></div>}
+          {store.address[locale] && <div><dt>{label.address}</dt><dd>{store.address[locale]}</dd></div>}
+          {store.tel && <div><dt>{label.tel}</dt><dd>{store.tel}</dd></div>}
+          {store.parking[locale] && <div><dt>{label.parking}</dt><dd>{store.parking[locale]}</dd></div>}
         </dl>
-      ) : (
+      ) : !open ? (
         <p class="store-detail__soon">{label.soon}</p>
-      )
+      ) : null
     }
 
-    {
-      open && (
-        <section class="store-detail__menu">
-          <h2>{label.menu}</h2>
-          <div class="menu-cols">
-            <div><h3>LUNCH</h3><p>{locale === "ja" ? "ワンプレートランチ（準備中）" : "One-plate lunch (coming)"}</p></div>
-            <div><h3>CAFE</h3><p>{locale === "ja" ? "スペシャルティコーヒー・スイーツ" : "Specialty coffee & sweets"}</p></div>
-            <div><h3>BAR</h3><p>{locale === "ja" ? "福島の地酒・夜の一杯" : "Local sake & evening drinks"}</p></div>
-          </div>
-        </section>
-      )
-    }
+    {bodyHtml && <div class="store-detail__body" set:html={bodyHtml} />}
 
     <a class="link-more" href={localizedPath("/stores", locale)}>← {label.back}</a>
   </div>
@@ -147,9 +119,9 @@ const label = {
     background: var(--color-bg-alt);
     text-align: center;
   }
-  .store-detail__menu { margin: var(--space-5) 0; }
-  .store-detail__menu h2 { font-size: var(--fs-h2); font-weight: 600; margin-bottom: var(--space-3); }
-  .menu-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-3); }
-  .menu-cols h3 { letter-spacing: 0.16em; color: var(--color-accent); margin-bottom: 0.4rem; }
-  @media (max-width: 680px) { .menu-cols { grid-template-columns: 1fr; } }
+  .store-detail__body { margin: var(--space-4) 0; line-height: 2.1; }
+  .store-detail__body :global(h2) { font-size: var(--fs-h2); font-weight: 600; margin: var(--space-4) 0 var(--space-2); }
+  .store-detail__body :global(h3) { letter-spacing: 0.12em; color: var(--color-accent); margin: var(--space-3) 0 0.4rem; }
+  .store-detail__body :global(img) { width: 100%; height: auto; margin: var(--space-2) 0; }
+  .store-detail__body :global(p) { margin-bottom: var(--space-2); }
 </style>

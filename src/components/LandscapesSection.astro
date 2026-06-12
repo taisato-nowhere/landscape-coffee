@@ -8,15 +8,15 @@ import {
   localizedPath,
   type Locale,
 } from "../text/ui";
-import { stores } from "../contents/content";
 import { getImage } from "../lib/images";
+import { getStores, cmsImage } from "../lib/microcms";
 
 interface Props {
   locale: Locale;
 }
 const { locale } = Astro.props;
 const t = useTranslations(locale);
-const featured = stores.filter((s) => s.featured);
+const featured = (await getStores()).filter((s) => s.featured);
 ---
 
 <section class="section landscapes">
@@ -31,7 +31,7 @@ const featured = stores.filter((s) => s.featured);
     <ul class="landscapes__list">
       {
         featured.map((s) => {
-          const img = getImage(`stores/${s.slug}`);
+          const local = getImage(`stores/${s.slug}`);
           return (
             <li class="landscape">
               <span class="landscape__rail" aria-hidden="true">
@@ -47,10 +47,12 @@ const featured = stores.filter((s) => s.featured);
 
               <a class="lcard" href={localizedPath(`/stores/${s.slug}`, locale)}>
                 <div class="lcard__media">
-                  {img ? (
+                  {s.thumbnailUrl ? (
+                    <img class="lcard__img" src={cmsImage(s.thumbnailUrl, 1400)} alt="" loading="lazy" />
+                  ) : local ? (
                     <Image
                       class="lcard__img"
-                      src={img}
+                      src={local}
                       alt=""
                       widths={[600, 1000, 1400]}
                       sizes="(max-width: 720px) 100vw, 64vw"

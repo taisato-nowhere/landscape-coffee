@@ -1,9 +1,10 @@
 ---
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import StoreDetailBody from "../../../components/pages/StoreDetailBody.astro";
-import { stores } from "../../../contents/content";
+import { getStores } from "../../../lib/microcms";
 
-export function getStaticPaths() {
+export async function getStaticPaths() {
+  const stores = await getStores();
   return stores.map((s) => ({ params: { slug: s.slug }, props: { store: s } }));
 }
 

@@ -4,7 +4,11 @@
 // → 鍵未設定でもビルドは通り、本番サイトは常に表示できる。
 import { getSecret } from "astro:env/server";
 import type { Locale } from "../text/ui";
-import { news as localNews, journal as localJournal } from "../contents/content";
+import {
+  news as localNews,
+  journal as localJournal,
+  stores as localStores,
+} from "../contents/content";
 
 const domain = getSecret("MICROCMS_SERVICE_DOMAIN");
 const apiKey = getSecret("MICROCMS_API_KEY");
@@ -96,4 +100,135 @@ export async function getJournalItem(slug: string): Promise<Article | null> {
 /** microCMS画像URLに最適化パラメータを付与（リサイズ・webp化）。 */
 export function cmsImage(url: string, w: number): string {
   return `${url}?fm=webp&w=${w}&q=80&fit=crop`;
+}
+
+// ---------------------------------------------------------------------------
+// 店舗（stores）
+// ---------------------------------------------------------------------------
+
+export type StoreMotif = "sea" | "town" | "mountain";
+
+/** 画面側で扱う正規化済みの店舗。 */
+export interface StoreEntry {
+  slug: string;
+  code: string;
+  nameEn: string;
+  name: Record<Locale, string>;
+  area: Record<Locale, string>;
+  role: Record<Locale, string>;
+  status: "open" | "coming_soon";
+  featured: boolean;
+  order: number;
+  motif: StoreMotif | null;
+  thumbnailUrl: string | null;
+  hours: string;
+  address: Record<Locale, string>;
+  tel: string;
+  parking: Record<Locale, string>;
+  body: Record<Locale, string>;
+}
+
+function normMotif(v: unknown): StoreMotif | null {
+  const s = Array.isArray(v) ? v[0] : v;
+  return s === "sea" || s === "town" || s === "mountain" ? s : null;
+}
+
+// slug からの既定モチーフ（CMS未指定時のフォールバック）
+const motifBySlug: Record<string, StoreMotif> = {
+  sakaide: "sea",
+  takamatsu: "sea",
+  motomiya: "town",
+  takayama: "mountain",
+};
+
+// モック時の店舗詳細（CMS未接続の間だけ使う暫定値）
+const localStoreDetails: Record<
+  string,
+  { hours: string; address: Record<Locale, string>; tel: string; parking: Record<Locale, string> }
+> = {
+  sakaide: {
+    hours: "11:00–19:00 / 月曜定休",
+    address: { ja: "香川県坂出市（詳細は準備中）", en: "Sakaide, Kagawa (details coming)" },
+    tel: "—",
+    parking: { ja: "近隣駐車場あり", en: "Nearby parking available" },
+  },
+  motomiya: {
+    hours: "11:00–19:00（夜営業：金・土）/ 定休日準備中",
+    address: { ja: "福島県本宮市・JR本宮駅徒歩1分", en: "1 min from JR Motomiya Sta., Fukushima" },
+    tel: "—",
+    parking: { ja: "店舗駐車場3台＋本宮駅前無料駐車場", en: "3 spaces + free station parking" },
+  },
+};
+
+async function fetchStores(): Promise<StoreEntry[]> {
+  const res = await fetch(
+    `https://${domain}.microcms.io/api/v1/stores?limit=100&orders=order`,
+    { headers: { "X-MICROCMS-API-KEY": apiKey as string } },
+  );
+  if (!res.ok) throw new Error(`microCMS stores ${res.status}`);
+  const data = (await res.json()) as { contents: any[] };
+  return data.contents.map((c) => {
+    const st = Array.isArray(c.status) ? c.status[0] : c.status;
+    return {
+      slug: c.id,
+      code: c.code ?? "",
+      nameEn: c.nameEn ?? "",
+      name: { ja: c.nameJa || c.nameEn || "", en: c.nameEn || "" },
+      area: { ja: c.areaJa ?? "", en: c.areaEn || c.areaJa || "" },
+      role: { ja: c.role ?? "", en: c.role ?? "" },
+      status: st === "coming_soon" ? "coming_soon" : "open",
+      featured: Boolean(c.featured),
+      order: typeof c.order === "number" ? c.order : 9999,
+      motif: normMotif(c.motif) ?? motifBySlug[c.id] ?? null,
+      thumbnailUrl: c.thumbnail?.url ?? null,
+      hours: c.hours ?? "",
+      address: { ja: c.addressJa ?? "", en: c.addressEn || c.addressJa || "" },
+      tel: c.tel ?? "",
+      parking: { ja: c.parkingJa ?? "", en: c.parkingEn || c.parkingJa || "" },
+      body: { ja: c.body ?? "", en: c.bodyEn || c.body || "" },
+    } satisfies StoreEntry;
+  });
+}
+
+function localToStores(): StoreEntry[] {
+  return localStores.map((s, i) => {
+    const d = localStoreDetails[s.slug];
+    return {
+      slug: s.slug,
+      code: s.code,
+      nameEn: s.nameEn,
+      name: { ...s.name },
+      area: { ...s.area },
+      role: { ...s.role },
+      status: s.status,
+      featured: s.featured,
+      order: i,
+      motif: motifBySlug[s.slug] ?? null,
+      thumbnailUrl: null,
+      hours: d?.hours ?? "",
+      address: d?.address ?? { ja: "", en: "" },
+      tel: d?.tel ?? "",
+      parking: d?.parking ?? { ja: "", en: "" },
+      body: { ja: "", en: "" },
+    } satisfies StoreEntry;
+  });
+}
+
+let storesCache: StoreEntry[] | null = null;
+
+/** 店舗一覧（order昇順）。microCMS優先・失敗時はモック。 */
+export async function getStores(): Promise<StoreEntry[]> {
+  if (storesCache) return storesCache;
+  if (!microcmsEnabled) return (storesCache = localToStores());
+  try {
+    return (storesCache = await fetchStores());
+  } catch (e) {
+    console.warn("[microCMS] stores 取得に失敗、モックにフォールバック:", e);
+    return (storesCache = localToStores());
+  }
+}
+
+/** slug で店舗1件 */
+export async function getStoreItem(slug: string): Promise<StoreEntry | null> {
+  return (await getStores()).find((s) => s.slug === slug) ?? null;
 }
