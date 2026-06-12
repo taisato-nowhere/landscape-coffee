@@ -23,7 +23,15 @@ export interface Article {
 }
 
 function fmtDate(v: string): string {
-  return (v ?? "").slice(0, 10).replace(/-/g, ".");
+  if (!v) return "";
+  const d = new Date(v);
+  if (isNaN(d.getTime())) return v.slice(0, 10).replace(/-/g, ".");
+  // microCMSの日付はUTC保存（日本時間0時=UTC前日15時）。JSTに直して YYYY.MM.DD。
+  const jst = new Date(d.getTime() + 9 * 3600 * 1000);
+  const y = jst.getUTCFullYear();
+  const m = String(jst.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(jst.getUTCDate()).padStart(2, "0");
+  return `${y}.${m}.${day}`;
 }
 
 async function fetchNews(): Promise<Article[]> {
