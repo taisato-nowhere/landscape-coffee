@@ -1,9 +1,10 @@
 ---
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import JournalDetailBody from "../../../components/pages/JournalDetailBody.astro";
-import { journal } from "../../../contents/content";
+import { getJournal } from "../../../lib/microcms";
 
-export function getStaticPaths() {
+export async function getStaticPaths() {
+  const journal = await getJournal();
   return journal.map((j) => ({ params: { slug: j.slug }, props: { item: j } }));
 }
 

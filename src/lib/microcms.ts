@@ -1,10 +1,10 @@
-// microCMS クライアント（ニュース）。
+// microCMS クライアント（ニュース / ジャーナル）。
 // 環境変数 MICROCMS_SERVICE_DOMAIN / MICROCMS_API_KEY が設定されていれば
 // microCMS から取得し、無ければ src/contents/content.ts のモックにフォールバックする。
 // → 鍵未設定でもビルドは通り、本番サイトは常に表示できる。
 import { getSecret } from "astro:env/server";
 import type { Locale } from "../text/ui";
-import { news as localNews } from "../contents/content";
+import { news as localNews, journal as localJournal } from "../contents/content";
 
 const domain = getSecret("MICROCMS_SERVICE_DOMAIN");
 const apiKey = getSecret("MICROCMS_API_KEY");
@@ -34,12 +34,13 @@ function fmtDate(v: string): string {
   return `${y}.${m}.${day}`;
 }
 
-async function fetchNews(): Promise<Article[]> {
+/** microCMS のリスト型API（news / journal 共通スキーマ）を取得して正規化。 */
+async function fetchList(endpoint: string): Promise<Article[]> {
   const res = await fetch(
-    `https://${domain}.microcms.io/api/v1/news?limit=100&orders=-date`,
+    `https://${domain}.microcms.io/api/v1/${endpoint}?limit=100&orders=-date`,
     { headers: { "X-MICROCMS-API-KEY": apiKey as string } },
   );
-  if (!res.ok) throw new Error(`microCMS news ${res.status}`);
+  if (!res.ok) throw new Error(`microCMS ${endpoint} ${res.status}`);
   const data = (await res.json()) as { contents: any[] };
   return data.contents.map((c) => ({
     slug: c.id,
@@ -51,35 +52,45 @@ async function fetchNews(): Promise<Article[]> {
   }));
 }
 
-function localToArticles(): Article[] {
-  return localNews.map((n) => ({
+type LocalItem = { slug: string; date: string; category: string; title: Record<Locale, string> };
+
+function localToArticles(items: LocalItem[]): Article[] {
+  return items.map((n) => ({
     slug: n.slug,
     date: n.date,
     category: n.category,
     title: { ...n.title },
     body: { ja: "", en: "" },
-    thumbnailUrl: null, // ローカルは getImage(`news/${slug}`) 側で解決
+    thumbnailUrl: null, // ローカルは getImage(`<endpoint>/${slug}`) 側で解決
   }));
 }
 
-let cache: Article[] | null = null;
+const cache: Record<string, Article[]> = {};
 
-/** ニュース一覧（新しい順）。microCMS優先・失敗時はモック。 */
-export async function getNews(): Promise<Article[]> {
-  if (cache) return cache;
-  if (!microcmsEnabled) return (cache = localToArticles());
+/** 汎用：エンドポイントの記事一覧（新しい順）。microCMS優先・失敗時はモック。 */
+async function getList(endpoint: string, fallback: LocalItem[]): Promise<Article[]> {
+  if (cache[endpoint]) return cache[endpoint];
+  if (!microcmsEnabled) return (cache[endpoint] = localToArticles(fallback));
   try {
-    return (cache = await fetchNews());
+    return (cache[endpoint] = await fetchList(endpoint));
   } catch (e) {
-    console.warn("[microCMS] ニュース取得に失敗、モックにフォールバック:", e);
-    return (cache = localToArticles());
+    console.warn(`[microCMS] ${endpoint} 取得に失敗、モックにフォールバック:`, e);
+    return (cache[endpoint] = localToArticles(fallback));
   }
 }
 
-/** slug（microCMSのコンテンツID）で1件取得。 */
+/** ニュース一覧 */
+export const getNews = () => getList("news", localNews);
+/** ジャーナル一覧 */
+export const getJournal = () => getList("journal", localJournal);
+
+/** slug でニュース1件 */
 export async function getNewsItem(slug: string): Promise<Article | null> {
-  const all = await getNews();
-  return all.find((a) => a.slug === slug) ?? null;
+  return (await getNews()).find((a) => a.slug === slug) ?? null;
+}
+/** slug でジャーナル1件 */
+export async function getJournalItem(slug: string): Promise<Article | null> {
+  return (await getJournal()).find((a) => a.slug === slug) ?? null;
 }
 
 /** microCMS画像URLに最適化パラメータを付与（リサイズ・webp化）。 */

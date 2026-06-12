@@ -1,14 +1,15 @@
 ---
 import { Image } from "astro:assets";
 import { useTranslations, localizedPath, type Locale } from "../text/ui";
-import { journal } from "../contents/content";
 import { getImage } from "../lib/images";
+import { getJournal, cmsImage } from "../lib/microcms";
 
 interface Props {
   locale: Locale;
 }
 const { locale } = Astro.props;
 const t = useTranslations(locale);
+const journal = (await getJournal()).slice(0, 3);
 ---
 
 <section class="section journal">
@@ -26,9 +27,12 @@ const t = useTranslations(locale);
           <li class="journal__card">
             <a href={localizedPath(`/journal/${j.slug}`, locale)}>
               {(() => {
-                const img = getImage(`journal/${j.slug}`);
-                return img ? (
-                  <Image class="journal__media journal__img" src={img} alt="" widths={[400, 800]} sizes="(max-width: 720px) 100vw, 33vw" />
+                const local = getImage(`journal/${j.slug}`);
+                if (j.thumbnailUrl) {
+                  return <img class="journal__media journal__img" src={cmsImage(j.thumbnailUrl, 800)} alt="" loading="lazy" />;
+                }
+                return local ? (
+                  <Image class="journal__media journal__img" src={local} alt="" widths={[400, 800]} sizes="(max-width: 720px) 100vw, 33vw" />
                 ) : (
                   <div class="journal__media ph ph--wide" aria-hidden="true">
                     {j.category}
