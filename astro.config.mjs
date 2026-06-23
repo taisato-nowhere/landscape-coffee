@@ -3,9 +3,7 @@ import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
-  // GitHub Pages（プロジェクトサイト）用。独自ドメインは後で再設定（CNAME＋base:'/'）。
-  site: 'https://taisato-nowhere.github.io',
-  base: '/landscape-coffee',
+  site: 'https://landscapecoffee.jp',
   i18n: {
     defaultLocale: 'ja',
     locales: ['ja', 'en'],
