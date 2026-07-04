@@ -72,16 +72,18 @@ const news = (await getNews()).slice(0, 3);
   .news__date {
     font-size: var(--fs-small);
     color: var(--color-ink-soft);
-    letter-spacing: 0.06em;
+    letter-spacing: 1px;
   }
   .news__cat {
-    font-size: 0.7rem;
-    letter-spacing: 0.16em;
+    font-family: var(--font-en-display);
+    font-size: var(--fs-small);
+    letter-spacing: 1px;
+    text-transform: lowercase;
     color: var(--color-accent);
   }
   .news__title {
-    font-size: 1.02rem;
-    line-height: 1.6;
+    font-size: var(--fs-body);
+    line-height: 1.8;
     transition: color var(--transition);
   }
   .news__item a:hover .news__title {

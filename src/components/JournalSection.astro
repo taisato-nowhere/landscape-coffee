@@ -70,8 +70,10 @@ const journal = (await getJournal()).slice(0, 3);
     object-fit: cover;
   }
   .journal__cat {
-    font-size: 0.7rem;
-    letter-spacing: 0.16em;
+    font-family: var(--font-en-display);
+    font-size: var(--fs-small);
+    letter-spacing: 1px;
+    text-transform: lowercase;
     color: var(--color-accent);
   }
   .journal__date {
@@ -79,9 +81,8 @@ const journal = (await getJournal()).slice(0, 3);
     color: var(--color-ink-soft);
   }
   .journal__title {
-    font-family: var(--font-serif);
-    font-size: 1.1rem;
-    line-height: 1.7;
+    font-size: var(--fs-body);
+    line-height: 1.8;
   }
 
   @media (max-width: 720px) {

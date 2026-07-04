@@ -1,151 +1,354 @@
 ---
-// ヒーロー：複数の写真をゆっくり動かしながら（Ken Burns）クロスフェードで切り替える。
-// Berth Coffee 参考。画像は src/assets/images/hero/*.jpg を順に表示。
+// トップヒーロー：余白の中に写真が点在するアーカイブボード。
+// 各写真だけが静かにフェードし、記憶の断片が入れ替わるように見せる。
 import { Image } from "astro:assets";
-import { useTranslations, type Locale } from "../text/ui";
-import { getImages } from "../lib/images";
+import Logo from "./Logo.astro";
+import { type Locale } from "../text/ui";
+import { getImage } from "../lib/images";
 
 interface Props {
   locale: Locale;
 }
 const { locale } = Astro.props;
-const t = useTranslations(locale);
+void locale;
 
-// ヒーローのスライド：src/assets/images/hero/ 配下を自動収集。
-// （main を先頭に、以降はファイル名順。画像を足す/減らすだけで増減できる）
-const slides = getImages("hero");
+const tiles = [
+  {
+    className: "hero__tile--main",
+    images: ["brand07/takayama-torii-bridge", "brand07/sakaide-storefront"],
+  },
+  {
+    className: "hero__tile--quiet",
+    images: ["brand07/sakaide-interior-wide", "brand07/takayama-riverside"],
+  },
+  {
+    className: "hero__tile--left",
+    images: ["brand07/sakaide-toast", "brand07/coffee-chiffon"],
+  },
+  {
+    className: "hero__tile--lower",
+    images: ["brand07/takayama-torii-bridge", "brand07/sakaide-pour"],
+  },
+  {
+    className: "hero__tile--tiny",
+    images: ["brand07/sakaide-cup", "brand07/coffee-beans"],
+  },
+  {
+    className: "hero__tile--right",
+    images: ["brand07/green-hill", "brand07/sakaide-night"],
+  },
+  {
+    className: "hero__tile--fragment",
+    images: ["brand07/sakaide-beans", "brand07/takayama-river-backlight"],
+  },
+  {
+    className: "hero__tile--bottom-left",
+    images: ["brand07/motomiya-storefront", "brand07/sakaide-food-plate"],
+  },
+  {
+    className: "hero__tile--bottom-note",
+    images: ["brand07/sakaide-cup", "brand07/leaves"],
+  },
+] as const;
+
+const duration = 42;
 ---
 
-<section class="hero">
-  <div class="hero__media" data-hero-slides>
+<section class="hero hero--archive" aria-label="LANDSCAPE COFFEE">
+  <div class="hero__board" aria-hidden="true">
     {
-      slides.length > 0 ? (
-        slides.map((img, i) => (
-          <Image
-            class:list={["hero__slide", { "is-active": i === 0 }]}
-            src={img}
-            alt=""
-            widths={[768, 1280, 2000]}
-            sizes="100vw"
-            loading={i === 0 ? "eager" : "lazy"}
-          />
-        ))
-      ) : (
-        <div class="ph ph--wide" role="img" aria-label="Kominka cafe interior">
-          古民家の店内写真（プレースホルダ）
-        </div>
-      )
+      tiles.map((tile, tileIndex) => {
+        const imgs = tile.images.map((key) => getImage(key)).filter(Boolean);
+        return (
+          <div
+            class:list={["hero__tile", tile.className]}
+            style={`--tile-entry-delay:${0.12 + tileIndex * 0.46}s; --tile-drift-delay:${1.5 + tileIndex * 0.37}s;`}
+          >
+            <span class="hero__tape" />
+            {
+              imgs.length > 0 ? (
+                imgs.map((img, imageIndex) => (
+                  <Image
+                    class:list={["hero__fade-image", { "is-primary": imageIndex === 0, "is-single": imgs.length === 1 }]}
+                    src={img}
+                    alt=""
+                    widths={[360, 720, 1080]}
+                    sizes="(max-width: 900px) 50vw, 30vw"
+                    loading={imageIndex === 0 ? "eager" : "lazy"}
+                    style={`--fade-delay:-${imageIndex * (duration / imgs.length) + tileIndex * 2.4}s; --fade-duration:${duration}s;`}
+                  />
+                ))
+              ) : (
+                <div class="hero__tile-ph" />
+              )
+            }
+          </div>
+        );
+      })
     }
   </div>
-
-  <div class="container hero__overlay">
-    <p class="eyebrow hero__eyebrow">LANDSCAPE COFFEE</p>
-    <h1 class="hero__title">{t("hero.title")}</h1>
-    <p class="hero__subtitle">{t("hero.subtitle")}</p>
+  <div class="hero__logo">
+    <Logo variant="horizontal" height={118} />
   </div>
-
-  <span class="hero__scroll" aria-hidden="true">{t("hero.scroll")}</span>
 </section>
 
 <style>
   .hero {
     position: relative;
-    isolation: isolate;
-  }
-  .hero__media {
-    position: relative;
-    aspect-ratio: 16 / 10;
-    min-height: 60vh;
+    min-height: 100vh;
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-line);
     overflow: hidden;
-    background: var(--color-bg-alt);
   }
-  @media (min-width: 768px) {
-    .hero__media {
-      aspect-ratio: 16 / 8;
-      min-height: 72vh;
-    }
+  .hero__board {
+    position: relative;
+    min-height: inherit;
   }
-  /* 各スライドは重ねて配置し、opacity でクロスフェード */
-  .hero__slide {
+  .hero__tile {
     position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    overflow: visible;
+    padding: clamp(0.24rem, 0.55vw, 0.42rem);
+    background: color-mix(in srgb, var(--color-surface) 82%, white);
+    box-shadow:
+      0 0 0 1px rgba(34, 34, 34, 0.035),
+      0 1px 0 rgba(34, 34, 34, 0.05),
+      0 16px 42px rgba(34, 34, 34, 0.11);
     opacity: 0;
-    /* ゆっくりフェード（イーズで滑らかに） */
-    transition: opacity 3s ease-in-out;
-    will-change: opacity, transform;
-    transform: translateZ(0);
+    --rotate: 0deg;
+    --photo-inset: clamp(0.24rem, 0.55vw, 0.42rem);
+    aspect-ratio: 4 / 5;
   }
-  .hero__slide.is-active {
+  .hero__tile--main {
+    left: clamp(32px, 5vw, 86px);
+    top: clamp(78px, 13vh, 130px);
+    width: clamp(240px, 22vw, 360px);
+    --rotate: -1.4deg;
+  }
+  .hero__tile--quiet {
+    right: clamp(34px, 5vw, 92px);
+    top: clamp(120px, 20vh, 190px);
+    width: clamp(230px, 21vw, 340px);
+    --rotate: 1.1deg;
+  }
+  .hero__tile--left {
+    left: clamp(270px, 31vw, 520px);
+    top: clamp(600px, 72vh, 730px);
+    width: clamp(170px, 14vw, 230px);
+    aspect-ratio: 1 / 1;
+    --rotate: -0.9deg;
+  }
+  .hero__tile--lower {
+    left: 41%;
+    top: clamp(74px, 11vh, 118px);
+    width: clamp(205px, 18vw, 295px);
+    --rotate: 0.8deg;
+  }
+  .hero__tile--tiny {
+    right: 22%;
+    top: clamp(70px, 10vh, 112px);
+    width: clamp(150px, 12vw, 205px);
+    aspect-ratio: 1 / 1;
+    --rotate: -1.8deg;
+  }
+  .hero__tile--right {
+    right: clamp(44px, 8vw, 140px);
+    bottom: clamp(28px, 5vh, 64px);
+    width: clamp(190px, 15vw, 260px);
+    --rotate: 1.5deg;
+  }
+  .hero__tile--fragment {
+    right: clamp(315px, 27vw, 500px);
+    bottom: clamp(18px, 4vh, 48px);
+    width: clamp(145px, 11vw, 195px);
+    --rotate: -1.2deg;
+  }
+  .hero__tile--bottom-left {
+    left: clamp(42px, 8vw, 128px);
+    bottom: clamp(58px, 10vh, 116px);
+    width: clamp(170px, 13vw, 228px);
+    aspect-ratio: 1 / 1;
+    --rotate: 1deg;
+  }
+  .hero__tile--bottom-note {
+    left: clamp(250px, 23vw, 410px);
+    bottom: clamp(166px, 25vh, 250px);
+    width: clamp(130px, 10vw, 176px);
+    aspect-ratio: 1 / 1;
+    --rotate: -1.6deg;
+  }
+  .hero__tape {
+    position: absolute;
+    z-index: 2;
+    top: -0.48rem;
+    left: 50%;
+    width: 42%;
+    min-width: 42px;
+    height: clamp(0.75rem, 1.4vw, 1.08rem);
+    transform: translateX(-50%) rotate(-2deg);
+    background: color-mix(in srgb, var(--color-sand) 64%, white);
+    opacity: 0.72;
+    pointer-events: none;
+  }
+  .hero__logo {
+    position: absolute;
+    z-index: 3;
+    left: 50%;
+    top: 50%;
+    width: clamp(230px, 24vw, 420px);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+  .hero__logo :global(.logo) {
+    width: 100%;
+    height: auto !important;
+  }
+  .hero__fade-image,
+  .hero__tile-ph {
+    position: absolute;
+    inset: var(--photo-inset);
+    width: calc(100% - var(--photo-inset) * 2);
+    height: calc(100% - var(--photo-inset) * 2);
+    display: block;
+    object-fit: cover;
+    filter: saturate(0.93) contrast(0.96);
+  }
+  .hero__fade-image {
+    opacity: 0;
+  }
+  .hero__fade-image.is-primary {
     opacity: 1;
   }
-  /* Ken Burns：全スライドを“同じタイムライン”で常にゆっくりズーム。
-     切替時も拡大率が一致するので、カクつき（拡大率の飛び）が起きない。 */
+  .hero__fade-image.is-single {
+    opacity: 1;
+  }
   @media (prefers-reduced-motion: no-preference) {
-    .hero__slide {
-      animation: hero-zoom 28s ease-in-out infinite alternate;
+    .hero__tile {
+      animation: hero-memory-in 2.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+      animation-delay: var(--tile-entry-delay);
+    }
+    .hero__fade-image:not(.is-primary) {
+      animation: hero-photo-fade var(--fade-duration) cubic-bezier(0.45, 0, 0.2, 1) infinite;
+      animation-delay: var(--fade-delay);
+    }
+    .hero__tile:hover .hero__fade-image {
+      transform: scale(1.025);
     }
   }
-  @keyframes hero-zoom {
+  @media (prefers-reduced-motion: reduce) {
+    .hero__tile {
+      opacity: 1;
+      transform: rotate(var(--rotate));
+    }
+    .hero__fade-image.is-primary {
+      opacity: 1;
+    }
+  }
+  @keyframes hero-memory-in {
     from {
-      transform: scale(1.02);
+      opacity: 0;
+      filter: blur(10px) saturate(0.82);
+      transform: translate3d(0, 18px, 0) rotate(var(--rotate));
     }
     to {
-      transform: scale(1.12);
+      opacity: 1;
+      filter: blur(0) saturate(1);
+      transform: translate3d(0, 0, 0) rotate(var(--rotate));
     }
   }
-  .hero__overlay {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: var(--space-2);
-    color: var(--color-bg);
-    text-shadow: 0 1px 24px rgba(0, 0, 0, 0.35);
+  @keyframes hero-photo-fade {
+    0%,
+    18% {
+      opacity: 1;
+    }
+    38%,
+    82% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
   }
-  .hero__eyebrow {
-    color: color-mix(in srgb, var(--color-bg) 85%, transparent);
+
+  @media (max-width: 980px) {
+    .hero {
+      display: flex;
+      flex-direction: column;
+      min-height: auto;
+      overflow: visible;
+    }
+    .hero__board {
+      order: 2;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-auto-rows: auto;
+      gap: clamp(8px, 2.4vw, 18px);
+      width: min(86vw, 500px);
+      min-height: 0;
+      margin: 0 auto clamp(76px, 16vw, 120px);
+      padding: 0;
+    }
+    .hero__tile {
+      position: relative;
+      inset: auto;
+      width: auto;
+      height: auto;
+      grid-column: auto !important;
+      grid-row: auto !important;
+      --photo-inset: clamp(0.2rem, 0.65vw, 0.34rem);
+    }
+    .hero__tile--main,
+    .hero__tile--quiet,
+    .hero__tile--right,
+    .hero__tile--bottom-left {
+      aspect-ratio: 4 / 5;
+    }
+    .hero__tile--left,
+    .hero__tile--lower,
+    .hero__tile--tiny {
+      aspect-ratio: 1 / 1;
+    }
+    .hero__tile--left,
+    .hero__tile--right,
+    .hero__tile--bottom-note {
+      margin-top: clamp(22px, 7vw, 48px);
+    }
+    .hero__tile--tiny,
+    .hero__tile--bottom-note {
+      width: 82%;
+      justify-self: end;
+    }
+    .hero__tile--fragment {
+      display: none;
+    }
+    .hero__logo {
+      position: relative;
+      order: 1;
+      left: auto;
+      top: auto;
+      transform: none;
+      width: min(52vw, 260px);
+      margin: clamp(76px, 14vw, 124px) auto clamp(36px, 7vw, 62px);
+    }
   }
-  .hero__title {
-    font-family: var(--font-serif);
-    font-size: var(--fs-hero);
-    font-weight: 500;
-    letter-spacing: 0.06em;
-    line-height: var(--lh-tight);
-    /* 和文は句読点でのみ改行（語中での不自然な折り返しを防ぐ） */
-    word-break: keep-all;
-    overflow-wrap: break-word;
-  }
-  .hero__subtitle {
-    font-size: 1rem;
-    letter-spacing: 0.12em;
-  }
-  .hero__scroll {
-    position: absolute;
-    left: 50%;
-    bottom: var(--space-3);
-    transform: translateX(-50%);
-    writing-mode: vertical-rl;
-    font-size: var(--fs-small);
-    letter-spacing: 0.3em;
-    color: var(--color-bg);
+
+  @media (max-width: 640px) {
+    .hero {
+      min-height: 100svh;
+    }
+    .hero__board {
+      width: min(90vw, 360px);
+      gap: clamp(6px, 2vw, 10px);
+      margin-bottom: clamp(64px, 18vw, 96px);
+    }
+    .hero__tile {
+      --photo-inset: 0.2rem;
+    }
+    .hero__tile--bottom-note {
+      display: none;
+    }
+    .hero__logo {
+      width: min(60vw, 220px);
+      margin: clamp(80px, 22vw, 118px) auto clamp(34px, 10vw, 54px);
+    }
   }
 </style>
-
-<script>
-  // 一定間隔で is-active を次のスライドへ送り、クロスフェード＋Ken Burns を回す。
-  const box = document.querySelector<HTMLElement>("[data-hero-slides]");
-  const slides = box ? Array.from(box.querySelectorAll<HTMLElement>(".hero__slide")) : [];
-  if (slides.length > 1) {
-    let i = 0;
-    const INTERVAL = 6500; // 表示時間（フェード2.4s込み）
-    setInterval(() => {
-      slides[i].classList.remove("is-active");
-      i = (i + 1) % slides.length;
-      slides[i].classList.add("is-active");
-    }, INTERVAL);
-  }
-</script>

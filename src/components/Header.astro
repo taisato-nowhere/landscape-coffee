@@ -68,7 +68,8 @@ const switchHref = localizedPath("/", otherLocale);
     background: color-mix(in srgb, var(--color-bg) 88%, transparent);
     backdrop-filter: blur(8px);
     border-bottom: 1px solid var(--color-line);
-    transition: background var(--transition), border-color var(--transition);
+    transition: background var(--transition), border-color var(--transition),
+      opacity var(--transition), transform var(--transition);
   }
 
   /* --- ファーストビュー用 透明オーバーレイヘッダー --- */
@@ -80,6 +81,14 @@ const switchHref = localizedPath("/", otherLocale);
     background: transparent;
     backdrop-filter: none;
     border-bottom-color: transparent;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-12px);
+  }
+  .site-header--overlay .site-header__logo {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition);
   }
   /* 透明時：文字・アイコンを白に、ロゴを反転して白に */
   .site-header--overlay .site-header__nav a,
@@ -99,6 +108,13 @@ const switchHref = localizedPath("/", otherLocale);
     background: color-mix(in srgb, var(--color-bg) 92%, transparent);
     backdrop-filter: blur(8px);
     border-bottom-color: var(--color-line);
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+  .site-header--overlay.is-scrolled .site-header__logo {
+    opacity: 1;
+    pointer-events: auto;
   }
   .site-header--overlay.is-scrolled .site-header__nav a,
   .site-header--overlay.is-scrolled .cart {
@@ -120,6 +136,13 @@ const switchHref = localizedPath("/", otherLocale);
   .site-header--overlay[data-open] {
     background: var(--color-bg);
     border-bottom-color: var(--color-line);
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+  .site-header--overlay[data-open] .site-header__logo {
+    opacity: 1;
+    pointer-events: auto;
   }
   .site-header--overlay[data-open] .site-header__nav a,
   .site-header--overlay[data-open] .cart,
@@ -142,8 +165,11 @@ const switchHref = localizedPath("/", otherLocale);
   .site-header__nav {
     display: flex;
     gap: var(--space-3);
+    font-family: var(--font-en-display);
     font-size: var(--fs-small);
-    letter-spacing: 0.12em;
+    font-weight: 400;
+    letter-spacing: 1px;
+    text-transform: lowercase;
     margin-inline: auto;
   }
   .site-header__nav a {
@@ -158,8 +184,9 @@ const switchHref = localizedPath("/", otherLocale);
     gap: var(--space-2);
   }
   .lang {
+    font-family: var(--font-en-display);
     font-size: var(--fs-small);
-    letter-spacing: 0.08em;
+    letter-spacing: 1px;
     color: var(--color-ink-soft);
     display: inline-flex;
     gap: 0.25rem;

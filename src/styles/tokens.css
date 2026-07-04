@@ -4,37 +4,39 @@
  * 色・余白・タイポはすべてここに集約する。
  * A〜Eのどのデザイン案に寄せる場合も、原則このファイルの値を
  * 書き換えるだけで全体の見た目が切り替わる設計。
- * （現在の既定値は A / Berth Coffee 寄りの編集トーン）
+ * （現在の既定値は LANDSCAPE COFFEE 07 ブランドカラーガイド準拠）
  */
 :root {
-  /* --- 配色：生成り × 墨 × 温かいブラウン --- */
-  --color-bg: #f6f3ec;          /* 生成り／オフホワイト背景 */
-  --color-bg-alt: #efe9dd;      /* セクションの差し色背景 */
-  --color-surface: #ffffff;     /* カード等 */
-  --color-ink: #1c1a17;         /* 墨色（ほぼ黒）テキスト */
-  --color-ink-soft: #5c554b;    /* 補助テキスト */
-  --color-line: #ddd5c7;        /* 罫線 */
-  --color-accent: #7a5230;      /* コーヒーブラウンのアクセント */
-  --color-accent-soft: #b08b62; /* アクセント淡 */
-  --color-ember: #b5532b;       /* 熾火（おきび）— 年輪の灯・OPEN等に一点だけ */
-  --color-overlay: #1a1714;     /* 写真に重ねる暗幕のベース色（木目に寄せた暖かい墨） */
+  /* --- 配色：Memory White × Ink Black + 自然由来のアクセント --- */
+  --color-bg: #efede7;          /* Memory White：時間を含んだ白 */
+  --color-bg-alt: #e5ddcf;      /* Sand Beige を薄く敷いた面 */
+  --color-surface: #f8f6f1;     /* 紙・カード面 */
+  --color-ink: #222222;         /* Ink Black：柔らかな墨黒 */
+  --color-ink-soft: #6b6259;    /* 補助テキスト：Wood Brown 寄り */
+  --color-line: #d8cfc2;        /* Sand Beige 由来の罫線 */
+  --color-accent: #4f6650;      /* Forest Green：主要アクセント */
+  --color-accent-soft: #6b5545; /* Wood Brown：静かなアクセント */
+  --color-ember: #b26b4c;       /* Terracotta：一点だけの温度 */
+  --color-sky: #c9d9e8;         /* Sky Blue：空気感の差し色 */
+  --color-sand: #d8c2a6;        /* Sand Beige：やさしい光 */
+  --color-overlay: #222222;     /* 写真に重ねる暗幕 */
 
   /* --- タイポグラフィ --- */
-  --font-sans: "Helvetica Neue", "Hiragino Kaku Gothic ProN", "Hiragino Sans",
-    "Noto Sans JP", "Yu Gothic", sans-serif;
+  --font-sans: "Noto Sans JP", "YuGothic", "Yu Gothic", "Hiragino Kaku Gothic ProN",
+    "Hiragino Sans", "Meiryo", sans-serif;
   --font-serif: "Times New Roman", "Hiragino Mincho ProN", "Yu Mincho",
     "Noto Serif JP", serif;
-  --font-en-display: "Helvetica Neue", Arial, sans-serif; /* 数字/英字の見出し用 */
+  --font-en-display: "Roboto", "Helvetica Neue", Arial, sans-serif; /* 数字/英字の見出し用 */
 
-  --fs-hero: clamp(1.3rem, 4.2vw, 3.4rem);
-  --fs-h1: clamp(1.6rem, 4vw, 3rem);
-  --fs-h2: clamp(1.3rem, 3vw, 2rem);
+  --fs-hero: clamp(1.4rem, 4.4vw, 3.1rem);
+  --fs-h1: clamp(1.35rem, 3.2vw, 2.4rem);
+  --fs-h2: clamp(0.95rem, 1.6vw, 1.15rem);
   --fs-numeral: clamp(3.5rem, 12vw, 9rem); /* 37 / 07 / 21 の巨大数字 */
-  --fs-body: 1rem;
-  --fs-small: 0.8125rem;
+  --fs-body: 13px;
+  --fs-small: 12px;
 
   --lh-tight: 1.15;
-  --lh-base: 1.8; /* 和文の可読性のため広め */
+  --lh-base: 2; /* 参照サイト同様、本文はゆったり読ませる */
 
   /* --- レイアウト・余白 --- */
   --space-1: 0.5rem;

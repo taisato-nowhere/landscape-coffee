@@ -23,7 +23,7 @@ const year = 2026;
 <footer class="site-footer">
   <div class="container site-footer__inner">
     <div class="site-footer__brand">
-      <Logo variant="stacked" reverse height={84} />
+      <Logo variant="horizontal" reverse height={72} />
       <p class="site-footer__tagline">{t("footer.tagline")}</p>
     </div>
 
@@ -72,8 +72,10 @@ const year = 2026;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0.4rem var(--space-4);
+    font-family: var(--font-en-display);
     font-size: var(--fs-small);
-    letter-spacing: 0.1em;
+    letter-spacing: 1px;
+    text-transform: lowercase;
   }
   .site-footer__nav a:hover {
     color: var(--color-accent-soft);
@@ -81,8 +83,10 @@ const year = 2026;
   .site-footer__social {
     display: flex;
     gap: var(--space-2);
+    font-family: var(--font-en-display);
     font-size: var(--fs-small);
-    letter-spacing: 0.1em;
+    letter-spacing: 1px;
+    text-transform: lowercase;
   }
   .site-footer__legal {
     display: flex;

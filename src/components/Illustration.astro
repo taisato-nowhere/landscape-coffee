@@ -1,12 +1,15 @@
 ---
 // 手描き風の線画イラスト（年輪ロゴと同じ手描きトーン）。currentColor で線色を継承。
 // name で motif を選択。装飾用途なので aria-hidden。
+import { withBase } from "../text/ui";
+
 interface Props {
   name: "mountain" | "sea" | "cup" | "town" | "beans" | "ring" | "stump" | "coffee";
   width?: number;
   class?: string;
 }
 const { name, width = 120, class: cls } = Astro.props;
+const cupUrl = withBase("/illustrations/coffee-cup.svg");
 const common = {
   fill: "none",
   stroke: "currentColor",
@@ -39,12 +42,7 @@ const common = {
   }
   {
     name === "cup" && (
-      <svg viewBox="0 0 80 64" {...common}>
-        <path d="M16 26 L60 26 L56 50 C55 55 51 58 46 58 L30 58 C25 58 21 55 20 50 Z" />
-        <path d="M60 30 C70 30 72 42 62 44" />
-        <path d="M32 8 C28 12 36 14 32 18" opacity="0.7" />
-        <path d="M44 6 C40 11 48 13 44 18" opacity="0.7" />
-      </svg>
+      <img class="illust__img" src={cupUrl} alt="" loading="lazy" decoding="async" />
     )
   }
   {
@@ -120,5 +118,10 @@ const common = {
     width: 100%;
     height: auto;
     display: block;
+  }
+  .illust__img {
+    display: block;
+    width: 100%;
+    height: auto;
   }
 </style>

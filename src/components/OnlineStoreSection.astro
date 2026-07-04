@@ -61,7 +61,7 @@ const t = useTranslations(locale);
     gap: var(--space-4);
   }
   .product__media {
-    background: linear-gradient(160deg, #efe7d8, #d9cdb6);
+    background: linear-gradient(160deg, var(--color-surface), var(--color-sand));
     display: grid;
     place-items: center;
     margin-bottom: var(--space-2);
@@ -74,15 +74,17 @@ const t = useTranslations(locale);
   }
   .product__bag {
     font-size: var(--fs-small);
-    letter-spacing: 0.1em;
+    letter-spacing: 1px;
     color: var(--color-accent);
     border: 1px solid var(--color-accent-soft);
     padding: 0.6rem 0.8rem;
     background: var(--color-surface);
   }
   .product__name {
-    font-weight: 600;
-    letter-spacing: 0.04em;
+    font-family: var(--font-en-display);
+    font-weight: 400;
+    letter-spacing: 1px;
+    text-transform: lowercase;
   }
   .product__meta {
     display: flex;
