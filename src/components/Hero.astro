@@ -1,6 +1,6 @@
 ---
-// トップヒーロー：余白の中に写真が点在するアーカイブボード。
-// 各写真だけが静かにフェードし、記憶の断片が入れ替わるように見せる。
+// トップヒーロー：写真を編集的に配置したブランドアーカイブ。
+// コラージュ感を抑え、余白と写真の比率で LANDSCAPE らしい静けさを作る。
 import { Image } from "astro:assets";
 import Logo from "./Logo.astro";
 import { type Locale } from "../text/ui";
@@ -15,43 +15,27 @@ void locale;
 const tiles = [
   {
     className: "hero__tile--main",
-    images: ["brand07/takayama-torii-bridge", "brand07/sakaide-storefront"],
+    images: ["brand07/sakaide-storefront"],
+  },
+  {
+    className: "hero__tile--center",
+    images: ["brand07/sakaide-pour"],
   },
   {
     className: "hero__tile--quiet",
-    images: ["brand07/sakaide-interior-wide", "brand07/takayama-riverside"],
-  },
-  {
-    className: "hero__tile--left",
-    images: ["brand07/sakaide-toast", "brand07/coffee-chiffon"],
+    images: ["brand07/takayama-riverside"],
   },
   {
     className: "hero__tile--lower",
-    images: ["brand07/takayama-torii-bridge", "brand07/sakaide-pour"],
+    images: ["brand07/motomiya-storefront"],
   },
   {
-    className: "hero__tile--tiny",
-    images: ["brand07/sakaide-cup", "brand07/coffee-beans"],
-  },
-  {
-    className: "hero__tile--right",
-    images: ["brand07/green-hill", "brand07/sakaide-night"],
-  },
-  {
-    className: "hero__tile--fragment",
-    images: ["brand07/sakaide-beans", "brand07/takayama-river-backlight"],
-  },
-  {
-    className: "hero__tile--bottom-left",
-    images: ["brand07/motomiya-storefront", "brand07/sakaide-food-plate"],
-  },
-  {
-    className: "hero__tile--bottom-note",
-    images: ["brand07/sakaide-cup", "brand07/leaves"],
+    className: "hero__tile--still",
+    images: ["brand07/sakaide-cup"],
   },
 ] as const;
 
-const duration = 42;
+const duration = 54;
 ---
 
 <section class="hero hero--archive" aria-label="LANDSCAPE COFFEE">
@@ -62,9 +46,8 @@ const duration = 42;
         return (
           <div
             class:list={["hero__tile", tile.className]}
-            style={`--tile-entry-delay:${0.12 + tileIndex * 0.46}s; --tile-drift-delay:${1.5 + tileIndex * 0.37}s;`}
+            style={`--tile-entry-delay:${0.28 + tileIndex * 0.44}s;`}
           >
-            <span class="hero__tape" />
             {
               imgs.length > 0 ? (
                 imgs.map((img, imageIndex) => (
@@ -107,94 +90,57 @@ const duration = 42;
   .hero__tile {
     position: absolute;
     overflow: visible;
-    padding: clamp(0.24rem, 0.55vw, 0.42rem);
-    background: color-mix(in srgb, var(--color-surface) 82%, white);
+    padding: 0;
+    background: transparent;
     box-shadow:
-      0 0 0 1px rgba(34, 34, 34, 0.035),
-      0 1px 0 rgba(34, 34, 34, 0.05),
-      0 16px 42px rgba(34, 34, 34, 0.11);
+      0 0 0 1px rgba(34, 34, 34, 0.06),
+      0 20px 48px rgba(34, 34, 34, 0.055);
     opacity: 0;
     --rotate: 0deg;
-    --photo-inset: clamp(0.24rem, 0.55vw, 0.42rem);
-    aspect-ratio: 4 / 5;
+    --shift-x: 0;
+    --photo-inset: 0px;
+    aspect-ratio: 4 / 5.35;
+    transform-origin: center;
   }
   .hero__tile--main {
-    left: clamp(32px, 5vw, 86px);
-    top: clamp(78px, 13vh, 130px);
-    width: clamp(240px, 22vw, 360px);
-    --rotate: -1.4deg;
+    left: clamp(46px, 6.5vw, 122px);
+    top: clamp(118px, 16vh, 170px);
+    width: clamp(300px, 24vw, 430px);
+    --rotate: -0.35deg;
+  }
+  .hero__tile--center {
+    left: 50%;
+    top: clamp(72px, 10vh, 116px);
+    width: clamp(210px, 15vw, 270px);
+    --shift-x: -50%;
+    --rotate: 0deg;
   }
   .hero__tile--quiet {
-    right: clamp(34px, 5vw, 92px);
-    top: clamp(120px, 20vh, 190px);
-    width: clamp(230px, 21vw, 340px);
-    --rotate: 1.1deg;
-  }
-  .hero__tile--left {
-    left: clamp(270px, 31vw, 520px);
-    top: clamp(600px, 72vh, 730px);
-    width: clamp(170px, 14vw, 230px);
-    aspect-ratio: 1 / 1;
-    --rotate: -0.9deg;
+    right: clamp(54px, 7.5vw, 146px);
+    top: clamp(140px, 20vh, 220px);
+    width: clamp(310px, 25vw, 445px);
+    --rotate: 0.28deg;
   }
   .hero__tile--lower {
-    left: 41%;
-    top: clamp(74px, 11vh, 118px);
-    width: clamp(205px, 18vw, 295px);
-    --rotate: 0.8deg;
-  }
-  .hero__tile--tiny {
-    right: 22%;
-    top: clamp(70px, 10vh, 112px);
-    width: clamp(150px, 12vw, 205px);
+    left: clamp(235px, 21vw, 380px);
+    bottom: clamp(10px, 3vh, 34px);
+    width: clamp(170px, 12vw, 220px);
     aspect-ratio: 1 / 1;
-    --rotate: -1.8deg;
+    --rotate: 0.18deg;
   }
-  .hero__tile--right {
-    right: clamp(44px, 8vw, 140px);
-    bottom: clamp(28px, 5vh, 64px);
-    width: clamp(190px, 15vw, 260px);
-    --rotate: 1.5deg;
-  }
-  .hero__tile--fragment {
-    right: clamp(315px, 27vw, 500px);
-    bottom: clamp(18px, 4vh, 48px);
-    width: clamp(145px, 11vw, 195px);
-    --rotate: -1.2deg;
-  }
-  .hero__tile--bottom-left {
-    left: clamp(42px, 8vw, 128px);
-    bottom: clamp(58px, 10vh, 116px);
-    width: clamp(170px, 13vw, 228px);
+  .hero__tile--still {
+    right: clamp(300px, 28vw, 520px);
+    bottom: clamp(20px, 4vh, 48px);
+    width: clamp(155px, 11vw, 210px);
     aspect-ratio: 1 / 1;
-    --rotate: 1deg;
-  }
-  .hero__tile--bottom-note {
-    left: clamp(250px, 23vw, 410px);
-    bottom: clamp(166px, 25vh, 250px);
-    width: clamp(130px, 10vw, 176px);
-    aspect-ratio: 1 / 1;
-    --rotate: -1.6deg;
-  }
-  .hero__tape {
-    position: absolute;
-    z-index: 2;
-    top: -0.48rem;
-    left: 50%;
-    width: 42%;
-    min-width: 42px;
-    height: clamp(0.75rem, 1.4vw, 1.08rem);
-    transform: translateX(-50%) rotate(-2deg);
-    background: color-mix(in srgb, var(--color-sand) 64%, white);
-    opacity: 0.72;
-    pointer-events: none;
+    --rotate: -0.25deg;
   }
   .hero__logo {
     position: absolute;
     z-index: 3;
     left: 50%;
-    top: 50%;
-    width: clamp(230px, 24vw, 420px);
+    top: clamp(390px, 51vh, 520px);
+    width: clamp(250px, 22vw, 380px);
     transform: translate(-50%, -50%);
     pointer-events: none;
   }
@@ -210,7 +156,7 @@ const duration = 42;
     height: calc(100% - var(--photo-inset) * 2);
     display: block;
     object-fit: cover;
-    filter: saturate(0.93) contrast(0.96);
+    filter: saturate(0.88) contrast(0.98);
   }
   .hero__fade-image {
     opacity: 0;
@@ -223,7 +169,7 @@ const duration = 42;
   }
   @media (prefers-reduced-motion: no-preference) {
     .hero__tile {
-      animation: hero-memory-in 2.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+      animation: hero-memory-in 3.8s cubic-bezier(0.16, 1, 0.3, 1) both;
       animation-delay: var(--tile-entry-delay);
     }
     .hero__fade-image:not(.is-primary) {
@@ -231,13 +177,13 @@ const duration = 42;
       animation-delay: var(--fade-delay);
     }
     .hero__tile:hover .hero__fade-image {
-      transform: scale(1.025);
+      transform: scale(1.015);
     }
   }
   @media (prefers-reduced-motion: reduce) {
     .hero__tile {
       opacity: 1;
-      transform: rotate(var(--rotate));
+      transform: translateX(var(--shift-x)) rotate(var(--rotate));
     }
     .hero__fade-image.is-primary {
       opacity: 1;
@@ -246,13 +192,17 @@ const duration = 42;
   @keyframes hero-memory-in {
     from {
       opacity: 0;
-      filter: blur(10px) saturate(0.82);
-      transform: translate3d(0, 18px, 0) rotate(var(--rotate));
+      filter: blur(16px) saturate(0.78);
+      transform: translate3d(0, 24px, 0) translateX(var(--shift-x)) rotate(var(--rotate));
+    }
+    62% {
+      opacity: 0.68;
+      filter: blur(5px) saturate(0.9);
     }
     to {
       opacity: 1;
       filter: blur(0) saturate(1);
-      transform: translate3d(0, 0, 0) rotate(var(--rotate));
+      transform: translate3d(0, 0, 0) translateX(var(--shift-x)) rotate(var(--rotate));
     }
   }
   @keyframes hero-photo-fade {
@@ -281,10 +231,10 @@ const duration = 42;
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       grid-auto-rows: auto;
-      gap: clamp(8px, 2.4vw, 18px);
-      width: min(86vw, 500px);
+      gap: clamp(16px, 4vw, 28px);
+      width: min(88vw, 560px);
       min-height: 0;
-      margin: 0 auto clamp(76px, 16vw, 120px);
+      margin: 0 auto clamp(80px, 16vw, 120px);
       padding: 0;
     }
     .hero__tile {
@@ -294,31 +244,28 @@ const duration = 42;
       height: auto;
       grid-column: auto !important;
       grid-row: auto !important;
-      --photo-inset: clamp(0.2rem, 0.65vw, 0.34rem);
+      --photo-inset: 0px;
+      transform: none !important;
     }
     .hero__tile--main,
-    .hero__tile--quiet,
-    .hero__tile--right,
-    .hero__tile--bottom-left {
-      aspect-ratio: 4 / 5;
+    .hero__tile--quiet {
+      aspect-ratio: 4 / 5.1;
     }
-    .hero__tile--left,
     .hero__tile--lower,
-    .hero__tile--tiny {
+    .hero__tile--center,
+    .hero__tile--still {
       aspect-ratio: 1 / 1;
     }
-    .hero__tile--left,
-    .hero__tile--right,
-    .hero__tile--bottom-note {
-      margin-top: clamp(22px, 7vw, 48px);
+    .hero__tile--main {
+      grid-column: 1 / -1 !important;
+      aspect-ratio: 16 / 10;
     }
-    .hero__tile--tiny,
-    .hero__tile--bottom-note {
-      width: 82%;
+    .hero__tile--quiet {
+      margin-top: clamp(24px, 7vw, 44px);
+    }
+    .hero__tile--still {
+      width: 78%;
       justify-self: end;
-    }
-    .hero__tile--fragment {
-      display: none;
     }
     .hero__logo {
       position: relative;
@@ -327,7 +274,7 @@ const duration = 42;
       top: auto;
       transform: none;
       width: min(52vw, 260px);
-      margin: clamp(76px, 14vw, 124px) auto clamp(36px, 7vw, 62px);
+      margin: clamp(78px, 15vw, 126px) auto clamp(42px, 8vw, 68px);
     }
   }
 
@@ -336,15 +283,12 @@ const duration = 42;
       min-height: 100svh;
     }
     .hero__board {
-      width: min(90vw, 360px);
-      gap: clamp(6px, 2vw, 10px);
-      margin-bottom: clamp(64px, 18vw, 96px);
+      width: min(88vw, 380px);
+      gap: clamp(16px, 4.8vw, 22px);
+      margin-bottom: clamp(68px, 18vw, 104px);
     }
     .hero__tile {
-      --photo-inset: 0.2rem;
-    }
-    .hero__tile--bottom-note {
-      display: none;
+      --photo-inset: 0px;
     }
     .hero__logo {
       width: min(60vw, 220px);
