@@ -125,6 +125,7 @@ export interface StoreEntry {
   address: Record<Locale, string>;
   tel: string;
   parking: Record<Locale, string>;
+  instagramUrl: string;
   body: Record<Locale, string>;
 }
 
@@ -144,13 +145,20 @@ const motifBySlug: Record<string, StoreMotif> = {
 // モック時の店舗詳細（CMS未接続の間だけ使う暫定値）
 const localStoreDetails: Record<
   string,
-  { hours: string; address: Record<Locale, string>; tel: string; parking: Record<Locale, string> }
+  {
+    hours: string;
+    address: Record<Locale, string>;
+    tel: string;
+    parking: Record<Locale, string>;
+    instagramUrl?: string;
+  }
 > = {
   sakaide: {
     hours: "11:00–19:00 / 月曜定休",
     address: { ja: "香川県坂出市（詳細は準備中）", en: "Sakaide, Kagawa (details coming)" },
     tel: "—",
     parking: { ja: "近隣駐車場あり", en: "Nearby parking available" },
+    instagramUrl: "https://www.instagram.com/landscape_coffee37/",
   },
   motomiya: {
     hours: "11:00–19:00（夜営業：金・土）/ 定休日準備中",
@@ -185,6 +193,7 @@ async function fetchStores(): Promise<StoreEntry[]> {
       address: { ja: c.addressJa ?? "", en: c.addressEn || c.addressJa || "" },
       tel: c.tel ?? "",
       parking: { ja: c.parkingJa ?? "", en: c.parkingEn || c.parkingJa || "" },
+      instagramUrl: c.instagramUrl ?? c.instagram ?? c.sns ?? "",
       body: { ja: c.body ?? "", en: c.bodyEn || c.body || "" },
     } satisfies StoreEntry;
   });
@@ -209,6 +218,7 @@ function localToStores(): StoreEntry[] {
       address: d?.address ?? { ja: "", en: "" },
       tel: d?.tel ?? "",
       parking: d?.parking ?? { ja: "", en: "" },
+      instagramUrl: d?.instagramUrl ?? "",
       body: { ja: "", en: "" },
     } satisfies StoreEntry;
   });

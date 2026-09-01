@@ -14,14 +14,15 @@ const { locale, store } = Astro.props;
 const t = useTranslations(locale);
 const local = getImage(`stores/${store.slug}`);
 const open = store.status === "open";
+const instagramUrl = store.instagramUrl.trim();
 
 const hasInfo =
   open && Boolean(store.hours || store.address[locale] || store.tel || store.parking[locale]);
 const bodyHtml = store.body[locale] || store.body.ja;
 
 const label = {
-  ja: { hours: "営業時間", address: "所在地", tel: "電話", parking: "駐車場", soon: "近日オープン予定。最新情報はニュース・SNSでお知らせします。", back: "店舗一覧へ" },
-  en: { hours: "Hours", address: "Address", tel: "Tel", parking: "Parking", soon: "Opening soon. Follow our news and social for updates.", back: "All stores" },
+  ja: { hours: "営業時間", address: "所在地", tel: "電話", parking: "駐車場", instagram: "Instagram", soon: "近日オープン予定。最新情報はニュース・SNSでお知らせします。", back: "店舗一覧へ" },
+  en: { hours: "Hours", address: "Address", tel: "Tel", parking: "Parking", instagram: "Instagram", soon: "Opening soon. Follow our news and social for updates.", back: "All stores" },
 }[locale];
 ---
 
@@ -63,6 +64,16 @@ const label = {
       ) : !open ? (
         <p class="store-detail__soon">{label.soon}</p>
       ) : null
+    }
+
+    {
+      instagramUrl && (
+        <p class="store-detail__sns">
+          <a href={instagramUrl} target="_blank" rel="noopener">
+            {label.instagram} →
+          </a>
+        </p>
+      )
     }
 
     {bodyHtml && <div class="store-detail__body" set:html={bodyHtml} />}
@@ -113,6 +124,16 @@ const label = {
     border-bottom: 1px dotted var(--color-line);
   }
   .store-detail__info dt { color: var(--color-ink-soft); font-size: var(--fs-small); }
+  .store-detail__sns {
+    margin: calc(var(--space-4) * -0.4) 0 var(--space-4);
+  }
+  .store-detail__sns a {
+    color: var(--color-accent);
+    font-family: var(--font-en-display);
+    font-size: var(--fs-small);
+    letter-spacing: 0.08em;
+    text-transform: lowercase;
+  }
   .store-detail__soon {
     margin: var(--space-4) 0;
     padding: var(--space-3);
