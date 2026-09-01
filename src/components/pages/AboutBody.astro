@@ -1,6 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import PageHeader from "../PageHeader.astro";
+import Logo from "../Logo.astro";
 import { localizedPath, type Locale } from "../../text/ui";
 import { getImage } from "../../lib/images";
 
@@ -19,14 +20,17 @@ const t = {
       {
         h: "Landscape とは",
         b: "Landscape は、景色だけではありません。いま目の前に見えている街並みだけでなく、なんだか楽しかったあの頃の記憶、いまこの瞬間を味わう感覚、これから育てたい未来のワクワク。私たちはそれら「思い出」も含めて、Landscape と呼びます。ここで出会う一人ひとりと人生の思い出を語りあい、様々な土地や人と出会って知ったコーヒー・食・お酒を、思い出話とともに届けたい。そんな思い出の交差点をつくっていきます。",
+        showLogo: false,
       },
       {
         h: "ロゴに込めた思い",
         b: "原点であるコーヒーを真ん中に、思い出をじっくり積み上げていく「年輪」をモチーフにしました。一番外の円は禅の「円相」を参考に、あえて閉じず、未完成のままワクワクして歩み続けることを表しています。人も店も、不完全だからこそ愛おしい。芯を持って地域に深く根ざしながら、じっくりと年輪を重ねていきます。",
+        showLogo: true,
       },
       {
         h: "スペシャルティコーヒーを、日常に",
         b: "香川県坂出市から始まったブランドとして、スペシャルティコーヒーを日常に届けます。福島・本宮、岐阜・高山、香川・高松へと、思い出の交差点を広げていきます。",
+        showLogo: false,
       },
     ],
   },
@@ -38,14 +42,17 @@ const t = {
       {
         h: "What is Landscape",
         b: "Landscape is not only the scenery in front of us. It is the memory of those somehow joyful days, the feeling of savoring this very moment, and the excitement for a future we want to nurture. We call all of these memories, too, Landscape. We want to share the coffee, food and drinks we have discovered through people and places — together with the stories behind them — and build a crossroads of memories.",
+        showLogo: false,
       },
       {
         h: "The meaning of our logo",
         b: "With coffee — our origin — at the center, the mark is based on tree rings that slowly accumulate, like memories. The outermost ring, inspired by the Zen ensō, is intentionally left open: to keep walking, unfinished and full of anticipation. People and shops are lovable precisely because they are incomplete.",
+        showLogo: true,
       },
       {
         h: "Specialty coffee, into everyday life",
         b: "Starting from Sakaide in Kagawa, we bring specialty coffee into everyday life — expanding the crossroads of memories to Motomiya (Fukushima), Takayama (Gifu) and Takamatsu (Kagawa).",
+        showLogo: false,
       },
     ],
   },
@@ -64,6 +71,13 @@ const t = {
     t.sections.map((s) => (
       <section class="about__section">
         <h2>{s.h}</h2>
+        {
+          s.showLogo && (
+            <figure class="about__logo-story" aria-label="LANDSCAPE COFFEE logo">
+              <Logo height={98} />
+            </figure>
+          )
+        }
         <p>{s.b}</p>
       </section>
     ))
@@ -87,7 +101,20 @@ const t = {
     margin-bottom: var(--space-2);
     letter-spacing: 0.04em;
   }
+  .about__logo-story {
+    width: min(100%, 320px);
+    margin: 0 0 var(--space-3);
+  }
   .about__section p {
     line-height: 2.1;
+  }
+  @media (max-width: 700px) {
+    .about__logo-story {
+      width: min(74vw, 260px);
+      margin-bottom: var(--space-2);
+    }
+    .about__logo-story :global(.logo) {
+      height: 78px !important;
+    }
   }
 </style>
