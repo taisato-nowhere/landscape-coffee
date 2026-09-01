@@ -1,6 +1,7 @@
 ---
 import Logo from "./Logo.astro";
 import { useTranslations, localizedPath, type Locale } from "../text/ui";
+import { SHOPIFY_STORE_URL } from "../lib/links";
 
 interface Props {
   locale: Locale;
@@ -12,9 +13,8 @@ const p = (path: string) => localizedPath(path, locale);
 const links = [
   { href: p("/about"), label: t("nav.about") },
   { href: p("/stores"), label: t("nav.stores") },
-  { href: p("/shop"), label: t("nav.shop") },
+  { href: SHOPIFY_STORE_URL, label: t("nav.shop") },
   { href: p("/news"), label: t("nav.news") },
-  { href: p("/journal"), label: t("nav.journal") },
   { href: p("/contact"), label: t("nav.contact") },
 ];
 const year = 2026;

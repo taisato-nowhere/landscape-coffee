@@ -4,14 +4,15 @@ import PageHeader from "../PageHeader.astro";
 import { type Locale } from "../../text/ui";
 import { products, yen } from "../../contents/content";
 import { getImage } from "../../lib/images";
+import { SHOPIFY_STORE_URL } from "../../lib/links";
 
 interface Props {
   locale: Locale;
 }
 const { locale } = Astro.props;
 const head = {
-  ja: { title: "オンラインストア", subtitle: "焙煎したスペシャルティコーヒーを、ご自宅へ。", note: "※ 決済・配送は Shopify で提供予定（準備中）。" },
-  en: { title: "Online Store", subtitle: "Freshly roasted specialty coffee, delivered to your home.", note: "* Checkout & shipping via Shopify (coming soon)." },
+  ja: { title: "オンラインストア", subtitle: "焙煎したスペシャルティコーヒーを、ご自宅へ。", note: "ご購入は LANDSCAPE COFFEE オンラインストアへお進みください。" },
+  en: { title: "Online Store", subtitle: "Freshly roasted specialty coffee, delivered to your home.", note: "Please continue to the LANDSCAPE COFFEE online store." },
 }[locale];
 ---
 
@@ -24,7 +25,7 @@ const head = {
         const img = getImage(`products/${pr.handle}`);
         return (
           <li class="product">
-            <a href={`#${pr.handle}`}>
+            <a href={SHOPIFY_STORE_URL}>
               {img ? (
                 <Image class="product__img" src={img} alt="" widths={[300, 600]} sizes="(max-width: 900px) 50vw, 25vw" />
               ) : (
@@ -38,7 +39,10 @@ const head = {
       })
     }
   </ul>
-  <p class="shop-note">{head.note}</p>
+  <p class="shop-note">
+    {head.note}
+    <a href={SHOPIFY_STORE_URL}>{locale === "ja" ? "オンラインストアを開く" : "Open online store"} →</a>
+  </p>
 </div>
 
 <style>
@@ -51,5 +55,6 @@ const head = {
   .product__name { font-weight: 600; letter-spacing: 0.04em; }
   .product__meta { display: flex; justify-content: space-between; margin-top: 0.2rem; font-size: var(--fs-small); color: var(--color-ink-soft); }
   .shop-note { margin-top: var(--space-5); text-align: center; font-size: var(--fs-small); color: var(--color-ink-soft); }
+  .shop-note a { display: inline-block; margin-left: 0.5rem; color: var(--color-accent); }
   @media (max-width: 900px) { .shop-grid { grid-template-columns: repeat(2, 1fr); } }
 </style>

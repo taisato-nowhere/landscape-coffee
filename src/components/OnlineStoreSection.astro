@@ -2,13 +2,10 @@
 // ONLINE STORE：叩き案 C の物販（LANDSCAPE / 37 / 07 / 21 BLEND）。
 // 後で Shopify Storefront API の商品に差し替え。
 import { Image } from "astro:assets";
-import {
-  useTranslations,
-  localizedPath,
-  type Locale,
-} from "../text/ui";
+import { useTranslations, type Locale } from "../text/ui";
 import { products, yen } from "../contents/content";
 import { getImage } from "../lib/images";
+import { SHOPIFY_STORE_URL } from "../lib/links";
 
 interface Props {
   locale: Locale;
@@ -21,7 +18,7 @@ const t = useTranslations(locale);
   <div class="container">
     <div class="section-head">
       <h2>{t("shop.title")}</h2>
-      <a class="link-more" href={localizedPath("/shop", locale)}>
+      <a class="link-more" href={SHOPIFY_STORE_URL}>
         {t("shop.more")} →
       </a>
     </div>
@@ -30,7 +27,7 @@ const t = useTranslations(locale);
       {
         products.map((pr) => (
           <li class="product">
-            <a href={localizedPath(`/shop/${pr.handle}`, locale)}>
+            <a href={SHOPIFY_STORE_URL}>
               {(() => {
                 const img = getImage(`products/${pr.handle}`);
                 return img ? (

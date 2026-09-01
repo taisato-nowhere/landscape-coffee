@@ -1,6 +1,7 @@
 ---
 import Logo from "./Logo.astro";
 import { useTranslations, localizedPath, type Locale } from "../text/ui";
+import { SHOPIFY_STORE_URL } from "../lib/links";
 
 interface Props {
   locale: Locale;
@@ -14,9 +15,8 @@ const p = (path: string) => localizedPath(path, locale);
 const nav = [
   { href: p("/about"), label: t("nav.about") },
   { href: p("/stores"), label: t("nav.stores") },
-  { href: p("/shop"), label: t("nav.shop") },
+  { href: SHOPIFY_STORE_URL, label: t("nav.shop") },
   { href: p("/news"), label: t("nav.news") },
-  { href: p("/journal"), label: t("nav.journal") },
   { href: p("/contact"), label: t("nav.contact") },
 ];
 
@@ -41,7 +41,7 @@ const switchHref = localizedPath("/", otherLocale);
         <span aria-hidden="true">/</span>
         <span class={locale === "en" ? "is-active" : ""}>EN</span>
       </a>
-      <a class="cart" href={p("/cart")} aria-label={t("nav.cart")}>
+      <a class="cart" href={SHOPIFY_STORE_URL} aria-label={t("nav.cart")}>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path
             d="M6 7h12l-1 12H7L6 7Z M9 7a3 3 0 0 1 6 0"
