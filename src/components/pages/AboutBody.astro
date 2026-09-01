@@ -1,8 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import PageHeader from "../PageHeader.astro";
-import Logo from "../Logo.astro";
-import { localizedPath, type Locale } from "../../text/ui";
+import { localizedPath, withBase, type Locale } from "../../text/ui";
 import { getImage } from "../../lib/images";
 
 interface Props {
@@ -10,6 +9,7 @@ interface Props {
 }
 const { locale } = Astro.props;
 const heroImg = getImage("brand07/kominka-front");
+const logoStorySrc = withBase("/logo/landscape-logo-black-tate.png");
 
 const t = {
   ja: {
@@ -74,7 +74,7 @@ const t = {
         {
           s.showLogo && (
             <figure class="about__logo-story" aria-label="LANDSCAPE COFFEE logo">
-              <Logo height={98} />
+              <img src={logoStorySrc} alt="LANDSCAPE COFFEE" loading="lazy" decoding="async" />
             </figure>
           )
         }
@@ -102,19 +102,21 @@ const t = {
     letter-spacing: 0.04em;
   }
   .about__logo-story {
-    width: min(100%, 320px);
-    margin: 0 0 var(--space-3);
+    width: min(74vw, 430px);
+    margin: var(--space-4) auto var(--space-4);
+  }
+  .about__logo-story img {
+    display: block;
+    width: 100%;
+    height: auto;
   }
   .about__section p {
     line-height: 2.1;
   }
   @media (max-width: 700px) {
     .about__logo-story {
-      width: min(74vw, 260px);
-      margin-bottom: var(--space-2);
-    }
-    .about__logo-story :global(.logo) {
-      height: 78px !important;
+      width: min(76vw, 300px);
+      margin: var(--space-3) auto var(--space-3);
     }
   }
 </style>
