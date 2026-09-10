@@ -1,280 +1,152 @@
 ---
-// トップヒーロー：写真を編集的に配置したブランドアーカイブ。
-// コラージュ感を抑え、余白と写真の比率で LANDSCAPE らしい静けさを作る。
-import { Image } from "astro:assets";
+// トップヒーロー：店舗の空気を伝えるフルスクリーン動画。
+// 指定素材をWeb向けH.264に最適化し、動きを減らす設定では静止画を表示する。
 import Logo from "./Logo.astro";
-import { type Locale } from "../text/ui";
-import { getImage } from "../lib/images";
+import { useTranslations, withBase, type Locale } from "../text/ui";
 
 interface Props {
   locale: Locale;
 }
+
 const { locale } = Astro.props;
-void locale;
-
-const tiles = [
-  {
-    className: "hero__tile--main",
-    images: ["brand07/sakaide-storefront"],
-  },
-  {
-    className: "hero__tile--center",
-    images: ["brand07/sakaide-pour"],
-  },
-  {
-    className: "hero__tile--quiet",
-    images: ["brand07/takayama-riverside"],
-  },
-  {
-    className: "hero__tile--lower",
-    images: ["brand07/motomiya-storefront"],
-  },
-  {
-    className: "hero__tile--still",
-    images: ["brand07/sakaide-cup"],
-  },
-] as const;
-
-const duration = 54;
+const t = useTranslations(locale);
+const videoSrc = withBase("/media/landscape-hero.mp4");
+const posterSrc = withBase("/media/landscape-hero-poster.jpg");
 ---
 
-<section class="hero hero--archive" aria-label="LANDSCAPE COFFEE">
-  <div class="hero__board" aria-hidden="true">
-    {
-      tiles.map((tile, tileIndex) => {
-        const imgs = tile.images.map((key) => getImage(key)).filter(Boolean);
-        return (
-          <div
-            class:list={["hero__tile", tile.className]}
-            style={`--tile-entry-delay:${0.28 + tileIndex * 0.44}s;`}
-          >
-            {
-              imgs.length > 0 ? (
-                imgs.map((img, imageIndex) => (
-                  <Image
-                    class:list={["hero__fade-image", { "is-primary": imageIndex === 0, "is-single": imgs.length === 1 }]}
-                    src={img}
-                    alt=""
-                    widths={[360, 720, 1080]}
-                    sizes="(max-width: 900px) 50vw, 30vw"
-                    loading={imageIndex === 0 ? "eager" : "lazy"}
-                    style={`--fade-delay:-${imageIndex * (duration / imgs.length) + tileIndex * 2.4}s; --fade-duration:${duration}s;`}
-                  />
-                ))
-              ) : (
-                <div class="hero__tile-ph" />
-              )
-            }
-          </div>
-        );
-      })
-    }
+<section class="hero" aria-label="LANDSCAPE COFFEE">
+  <div class="hero__media" aria-hidden="true">
+    <img
+      class="hero__poster"
+      src={posterSrc}
+      alt=""
+      width="1920"
+      height="1080"
+      loading="eager"
+      decoding="async"
+    />
+    <video
+      class="hero__video"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="metadata"
+      poster={posterSrc}
+    >
+      <source src={videoSrc} type='video/mp4; codecs="avc1.640029"' />
+    </video>
   </div>
+
+  <div class="hero__shade" aria-hidden="true"></div>
+
   <div class="hero__logo">
     <Logo variant="horizontal" height={118} />
+  </div>
+
+  <div class="hero__scroll" aria-hidden="true">
+    <span>{t("hero.scroll")}</span>
+    <i></i>
   </div>
 </section>
 
 <style>
   .hero {
     position: relative;
-    min-height: 100vh;
-    background: var(--color-bg);
-    border-bottom: 1px solid var(--color-line);
+    min-height: max(640px, 100svh);
     overflow: hidden;
+    background: #171612;
   }
-  .hero__board {
-    position: relative;
-    min-height: inherit;
-  }
-  .hero__tile {
+
+  .hero__media,
+  .hero__poster,
+  .hero__video,
+  .hero__shade {
     position: absolute;
-    overflow: visible;
-    padding: 0;
-    background: transparent;
-    box-shadow:
-      0 0 0 1px rgba(34, 34, 34, 0.06),
-      0 20px 48px rgba(34, 34, 34, 0.055);
-    opacity: 0;
-    --rotate: 0deg;
-    --shift-x: 0;
-    --photo-inset: 0px;
-    aspect-ratio: 4 / 5.35;
-    transform-origin: center;
+    inset: 0;
+    width: 100%;
+    height: 100%;
   }
-  .hero__tile--main {
-    left: clamp(46px, 6.5vw, 122px);
-    top: clamp(118px, 16vh, 170px);
-    width: clamp(300px, 24vw, 430px);
-    --rotate: -0.35deg;
+
+  .hero__poster,
+  .hero__video {
+    object-fit: cover;
+    object-position: center center;
   }
-  .hero__tile--center {
-    left: 50%;
-    top: clamp(72px, 10vh, 116px);
-    width: clamp(210px, 15vw, 270px);
-    --shift-x: -50%;
-    --rotate: 0deg;
+
+  .hero__poster {
+    z-index: 0;
   }
-  .hero__tile--quiet {
-    right: clamp(54px, 7.5vw, 146px);
-    top: clamp(140px, 20vh, 220px);
-    width: clamp(310px, 25vw, 445px);
-    --rotate: 0.28deg;
+
+  .hero__video {
+    z-index: 1;
+    display: block;
   }
-  .hero__tile--lower {
-    left: clamp(235px, 21vw, 380px);
-    bottom: clamp(10px, 3vh, 34px);
-    width: clamp(170px, 12vw, 220px);
-    aspect-ratio: 1 / 1;
-    --rotate: 0.18deg;
+
+  .hero__shade {
+    z-index: 2;
+    background:
+      linear-gradient(180deg, rgba(10, 9, 7, 0.28) 0%, rgba(10, 9, 7, 0.04) 43%, rgba(10, 9, 7, 0.3) 100%),
+      linear-gradient(90deg, rgba(10, 9, 7, 0.08), transparent 32%, transparent 68%, rgba(10, 9, 7, 0.08));
+    pointer-events: none;
   }
-  .hero__tile--still {
-    right: clamp(300px, 28vw, 520px);
-    bottom: clamp(20px, 4vh, 48px);
-    width: clamp(155px, 11vw, 210px);
-    aspect-ratio: 1 / 1;
-    --rotate: -0.25deg;
-  }
+
   .hero__logo {
     position: absolute;
     z-index: 3;
     left: 50%;
-    top: clamp(390px, 51vh, 520px);
-    width: clamp(250px, 22vw, 380px);
+    top: 50%;
+    width: min(47vw, 620px);
     transform: translate(-50%, -50%);
+    filter: invert(1) brightness(2.4);
     pointer-events: none;
   }
+
   .hero__logo :global(.logo) {
     width: 100%;
     height: auto !important;
   }
-  .hero__fade-image,
-  .hero__tile-ph {
+
+  .hero__scroll {
     position: absolute;
-    inset: var(--photo-inset);
-    width: calc(100% - var(--photo-inset) * 2);
-    height: calc(100% - var(--photo-inset) * 2);
-    display: block;
-    object-fit: cover;
-    filter: saturate(0.88) contrast(0.98);
-  }
-  .hero__fade-image {
-    opacity: 0;
-  }
-  .hero__fade-image.is-primary {
-    opacity: 1;
-  }
-  .hero__fade-image.is-single {
-    opacity: 1;
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    .hero__tile {
-      animation: hero-memory-in 3.8s cubic-bezier(0.16, 1, 0.3, 1) both;
-      animation-delay: var(--tile-entry-delay);
-    }
-    .hero__fade-image:not(.is-primary) {
-      animation: hero-photo-fade var(--fade-duration) cubic-bezier(0.45, 0, 0.2, 1) infinite;
-      animation-delay: var(--fade-delay);
-    }
-    .hero__tile:hover .hero__fade-image {
-      transform: scale(1.015);
-    }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .hero__tile {
-      opacity: 1;
-      transform: translateX(var(--shift-x)) rotate(var(--rotate));
-    }
-    .hero__fade-image.is-primary {
-      opacity: 1;
-    }
-  }
-  @keyframes hero-memory-in {
-    from {
-      opacity: 0;
-      filter: blur(16px) saturate(0.78);
-      transform: translate3d(0, 24px, 0) translateX(var(--shift-x)) rotate(var(--rotate));
-    }
-    62% {
-      opacity: 0.68;
-      filter: blur(5px) saturate(0.9);
-    }
-    to {
-      opacity: 1;
-      filter: blur(0) saturate(1);
-      transform: translate3d(0, 0, 0) translateX(var(--shift-x)) rotate(var(--rotate));
-    }
-  }
-  @keyframes hero-photo-fade {
-    0%,
-    18% {
-      opacity: 1;
-    }
-    38%,
-    82% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 1;
-    }
+    z-index: 3;
+    right: clamp(22px, 3vw, 48px);
+    bottom: clamp(24px, 4vh, 44px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    color: rgba(255, 255, 255, 0.88);
+    font-family: var(--font-en-display);
+    font-size: 0.64rem;
+    letter-spacing: 0.18em;
+    writing-mode: vertical-rl;
   }
 
-  @media (max-width: 980px) {
-    .hero {
-      display: flex;
-      flex-direction: column;
-      min-height: auto;
-      overflow: visible;
+  .hero__scroll i {
+    display: block;
+    width: 1px;
+    height: 48px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.34);
+  }
+
+  .hero__scroll i::after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 46%;
+    background: #fff;
+    animation: hero-scroll-line 2.2s ease-in-out infinite;
+  }
+
+  @keyframes hero-scroll-line {
+    from {
+      transform: translateY(-115%);
     }
-    .hero__board {
-      order: 2;
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      grid-auto-rows: auto;
-      gap: clamp(16px, 4vw, 28px);
-      width: min(88vw, 560px);
-      min-height: 0;
-      margin: 0 auto clamp(80px, 16vw, 120px);
-      padding: 0;
-    }
-    .hero__tile {
-      position: relative;
-      inset: auto;
-      width: auto;
-      height: auto;
-      grid-column: auto !important;
-      grid-row: auto !important;
-      --photo-inset: 0px;
-      transform: none !important;
-    }
-    .hero__tile--main,
-    .hero__tile--quiet {
-      aspect-ratio: 4 / 5.1;
-    }
-    .hero__tile--lower,
-    .hero__tile--center,
-    .hero__tile--still {
-      aspect-ratio: 1 / 1;
-    }
-    .hero__tile--main {
-      grid-column: 1 / -1 !important;
-      aspect-ratio: 16 / 10;
-    }
-    .hero__tile--quiet {
-      margin-top: clamp(24px, 7vw, 44px);
-    }
-    .hero__tile--still {
-      width: 78%;
-      justify-self: end;
-    }
-    .hero__logo {
-      position: relative;
-      order: 1;
-      left: auto;
-      top: auto;
-      transform: none;
-      width: min(52vw, 260px);
-      margin: clamp(78px, 15vw, 126px) auto clamp(42px, 8vw, 68px);
+    55%,
+    to {
+      transform: translateY(220%);
     }
   }
 
@@ -282,17 +154,31 @@ const duration = 54;
     .hero {
       min-height: 100svh;
     }
-    .hero__board {
-      width: min(88vw, 380px);
-      gap: clamp(16px, 4.8vw, 22px);
-      margin-bottom: clamp(68px, 18vw, 104px);
+
+    .hero__poster,
+    .hero__video {
+      object-position: 50% center;
     }
-    .hero__tile {
-      --photo-inset: 0px;
-    }
+
     .hero__logo {
-      width: min(60vw, 220px);
-      margin: clamp(80px, 22vw, 118px) auto clamp(34px, 10vw, 54px);
+      top: 48%;
+      width: min(72vw, 360px);
+    }
+
+    .hero__scroll {
+      right: 18px;
+      bottom: 22px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__video {
+      display: none;
+    }
+
+    .hero__scroll i::after {
+      animation: none;
+      transform: none;
     }
   }
 </style>
