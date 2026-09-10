@@ -17,6 +17,7 @@ const isMotomiya = store.slug === "motomiya";
 const motomiyaVideoSrc = withBase("/media/landscape-hero.mp4?v=20260910-trim");
 const motomiyaPosterSrc = withBase("/media/landscape-hero-poster.jpg");
 const open = store.status === "open";
+const mapUrl = store.mapUrl.trim();
 const instagramUrl = store.instagramUrl.trim();
 
 const hasInfo =
@@ -82,8 +83,19 @@ const label = {
     {
       hasInfo ? (
         <dl class="store-detail__info">
-          {store.hours && <div><dt>{label.hours}</dt><dd>{store.hours}</dd></div>}
-          {store.address[locale] && <div><dt>{label.address}</dt><dd>{store.address[locale]}</dd></div>}
+          {store.hours && <div><dt>{label.hours}</dt><dd class="store-detail__hours">{store.hours}</dd></div>}
+          {store.address[locale] && (
+            <div>
+              <dt>{label.address}</dt>
+              <dd>
+                {mapUrl ? (
+                  <a class="store-detail__map" href={mapUrl} target="_blank" rel="noopener">
+                    {store.address[locale]} ↗
+                  </a>
+                ) : store.address[locale]}
+              </dd>
+            </div>
+          )}
           {store.tel && <div><dt>{label.tel}</dt><dd>{store.tel}</dd></div>}
           {store.parking[locale] && <div><dt>{label.parking}</dt><dd>{store.parking[locale]}</dd></div>}
         </dl>
@@ -165,6 +177,12 @@ const label = {
     border-bottom: 1px dotted var(--color-line);
   }
   .store-detail__info dt { color: var(--color-ink-soft); font-size: var(--fs-small); }
+  .store-detail__hours { white-space: pre-line; }
+  .store-detail__map {
+    text-decoration: underline;
+    text-decoration-color: var(--color-line);
+    text-underline-offset: 0.24em;
+  }
   .store-detail__sns {
     margin: calc(var(--space-4) * -0.4) 0 var(--space-4);
   }

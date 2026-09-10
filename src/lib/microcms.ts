@@ -123,6 +123,7 @@ export interface StoreEntry {
   thumbnailUrl: string | null;
   hours: string;
   address: Record<Locale, string>;
+  mapUrl: string;
   tel: string;
   parking: Record<Locale, string>;
   instagramUrl: string;
@@ -148,6 +149,7 @@ const localStoreDetails: Record<
   {
     hours: string;
     address: Record<Locale, string>;
+    mapUrl?: string;
     tel: string;
     parking: Record<Locale, string>;
     instagramUrl?: string;
@@ -161,10 +163,15 @@ const localStoreDetails: Record<
     instagramUrl: "https://www.instagram.com/landscape_coffee37/",
   },
   motomiya: {
-    hours: "11:00–19:00（夜営業：金・土）/ 定休日準備中",
-    address: { ja: "福島県本宮市・JR本宮駅徒歩1分", en: "1 min from JR Motomiya Sta., Fukushima" },
-    tel: "—",
-    parking: { ja: "店舗駐車場3台＋本宮駅前無料駐車場", en: "3 spaces + free station parking" },
+    hours: "火・水・木 11:00–17:00\n金・土 11:00–23:00\n日・月 定休",
+    address: {
+      ja: "福島県本宮市本宮南町裡29-3",
+      en: "29-3 Motomiya Minamimachiura, Motomiya, Fukushima",
+    },
+    mapUrl: "https://maps.app.goo.gl/t8LEaxmUhC7KZoif8",
+    tel: "",
+    parking: { ja: "店舗駐車場3台", en: "3 parking spaces at the store" },
+    instagramUrl: "https://www.instagram.com/stories/landscape_coffee07/",
   },
 };
 
@@ -191,6 +198,7 @@ async function fetchStores(): Promise<StoreEntry[]> {
       thumbnailUrl: c.thumbnail?.url ?? null,
       hours: c.hours ?? "",
       address: { ja: c.addressJa ?? "", en: c.addressEn || c.addressJa || "" },
+      mapUrl: c.mapUrl ?? c.googleMapUrl ?? "",
       tel: c.tel ?? "",
       parking: { ja: c.parkingJa ?? "", en: c.parkingEn || c.parkingJa || "" },
       instagramUrl: c.instagramUrl ?? c.instagram ?? c.sns ?? "",
@@ -216,6 +224,7 @@ function localToStores(): StoreEntry[] {
       thumbnailUrl: null,
       hours: d?.hours ?? "",
       address: d?.address ?? { ja: "", en: "" },
+      mapUrl: d?.mapUrl ?? "",
       tel: d?.tel ?? "",
       parking: d?.parking ?? { ja: "", en: "" },
       instagramUrl: d?.instagramUrl ?? "",
