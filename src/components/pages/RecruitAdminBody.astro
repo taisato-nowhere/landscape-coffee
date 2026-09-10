@@ -1,0 +1,610 @@
+---
+import PageHeader from "../PageHeader.astro";
+import { withBase } from "../../text/ui";
+---
+
+<PageHeader
+  eyebrow="RECRUITMENT ADMIN"
+  title="応募者管理"
+  subtitle="ローカル試作用の採用管理画面です。応募フォーム、CSV、手動登録の応募者を一元管理します。"
+/>
+
+<div class="container recruitment-admin" data-admin-app>
+  <section class="metrics" aria-label="応募状況サマリー">
+    <article><span data-metric="total">0</span><p>総応募</p></article>
+    <article><span data-metric="new">0</span><p>新規応募</p></article>
+    <article><span data-metric="interview">0</span><p>面接系</p></article>
+    <article><span data-metric="hired">0</span><p>採用</p></article>
+  </section>
+
+  <section class="admin-tools" aria-label="管理ツール">
+    <div class="filters">
+      <label>
+        <span>検索</span>
+        <input data-search type="search" placeholder="名前・店舗・媒体・職種" />
+      </label>
+      <label>
+        <span>ステータス</span>
+        <select data-status-filter>
+          <option value="">すべて</option>
+        </select>
+      </label>
+      <label>
+        <span>媒体</span>
+        <select data-source-filter>
+          <option value="">すべて</option>
+          <option value="official">公式サイト</option>
+          <option value="indeed">Indeed</option>
+          <option value="stanby">スタンバイ</option>
+          <option value="instagram">Instagram</option>
+          <option value="referral">紹介</option>
+          <option value="store">店頭</option>
+          <option value="other">その他</option>
+        </select>
+      </label>
+    </div>
+    <div class="tool-buttons">
+      <a href={withBase("/recruit")}>応募フォーム</a>
+      <button data-seed type="button">サンプル追加</button>
+      <button data-export type="button">CSV書き出し</button>
+      <button data-clear type="button">全削除</button>
+    </div>
+  </section>
+
+  <section class="csv-panel" aria-labelledby="csv-title">
+    <details>
+      <summary id="csv-title">CSVインポート</summary>
+      <p>形式: 氏名,メール,電話,店舗,職種,媒体。Indeedやスタンバイから出したCSVの簡易取り込みを想定しています。</p>
+      <textarea data-csv rows="4" placeholder="山田太郎,taro@example.com,090-0000-0000,本宮07,バリスタ / 店舗スタッフ,indeed"></textarea>
+      <button data-import type="button">CSVを取り込む</button>
+    </details>
+  </section>
+
+  <div class="admin-grid">
+    <section class="candidate-list" aria-labelledby="candidate-list-title">
+      <div class="section-head">
+        <h2 id="candidate-list-title">応募者一覧</h2>
+        <span data-count>0件</span>
+      </div>
+      <div data-list class="candidate-list__items"></div>
+    </section>
+
+    <aside class="candidate-detail" aria-labelledby="candidate-detail-title">
+      <h2 id="candidate-detail-title">応募者詳細</h2>
+      <div data-empty class="empty-state">応募者を選択してください。</div>
+      <form data-detail-form hidden>
+        <input type="hidden" name="id" />
+        <div class="detail-head">
+          <div>
+            <p data-detail-source class="source-pill"></p>
+            <h3 data-detail-name></h3>
+            <p data-detail-meta></p>
+          </div>
+        </div>
+        <label>
+          <span>ステータス</span>
+          <select name="status" data-detail-status></select>
+        </label>
+        <label>
+          <span>担当メモ</span>
+          <textarea name="note" rows="7" data-detail-note></textarea>
+        </label>
+        <div class="detail-block">
+          <h4>連絡先</h4>
+          <p data-detail-contact></p>
+        </div>
+        <div class="detail-block">
+          <h4>勤務可能日時</h4>
+          <p data-detail-availability></p>
+        </div>
+        <div class="detail-block">
+          <h4>志望理由</h4>
+          <p data-detail-motivation></p>
+        </div>
+        <div class="detail-actions">
+          <button type="submit">保存する</button>
+          <button data-delete type="button">削除</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+</div>
+
+<style>
+  .recruitment-admin {
+    display: grid;
+    gap: var(--space-3);
+    padding-bottom: var(--space-6);
+  }
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-2);
+  }
+  .metrics article,
+  .admin-tools,
+  .csv-panel,
+  .candidate-list,
+  .candidate-detail {
+    border: 1px solid var(--color-line);
+    background: color-mix(in srgb, var(--color-surface) 72%, transparent);
+  }
+  .metrics article {
+    padding: var(--space-3);
+  }
+  .metrics span {
+    display: block;
+    font-family: var(--font-en-display);
+    font-size: clamp(2rem, 6vw, 4rem);
+    line-height: 1;
+  }
+  .metrics p {
+    margin-top: var(--space-1);
+    color: var(--color-ink-soft);
+    font-size: var(--fs-small);
+    letter-spacing: 0.08em;
+  }
+  .admin-tools {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-2);
+    padding: var(--space-2);
+    align-items: end;
+  }
+  .filters {
+    display: grid;
+    grid-template-columns: minmax(220px, 1.4fr) minmax(150px, 0.8fr) minmax(150px, 0.8fr);
+    gap: var(--space-2);
+    flex: 1;
+  }
+  label {
+    display: grid;
+    gap: 0.35rem;
+  }
+  label span {
+    color: var(--color-ink-soft);
+    font-size: var(--fs-small);
+  }
+  input,
+  select,
+  textarea {
+    width: 100%;
+    font: inherit;
+    color: var(--color-ink);
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius);
+    padding: 0.65rem 0.75rem;
+  }
+  textarea {
+    resize: vertical;
+  }
+  .tool-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    justify-content: flex-end;
+  }
+  .tool-buttons button,
+  .tool-buttons a,
+  .csv-panel button,
+  .detail-actions button {
+    border: 1px solid var(--color-ink);
+    background: var(--color-ink);
+    color: var(--color-bg);
+    padding: 0.62rem 0.9rem;
+    font-size: var(--fs-small);
+    letter-spacing: 0.08em;
+  }
+  .tool-buttons button:last-child,
+  .detail-actions button:last-child {
+    background: transparent;
+    color: var(--color-ink);
+  }
+  .csv-panel {
+    padding: var(--space-2);
+  }
+  .csv-panel summary {
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .csv-panel p {
+    margin-block: var(--space-1);
+    color: var(--color-ink-soft);
+    font-size: var(--fs-small);
+  }
+  .csv-panel textarea {
+    margin-bottom: var(--space-1);
+  }
+  .admin-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(360px, 0.7fr);
+    gap: var(--space-3);
+    align-items: start;
+  }
+  .candidate-list,
+  .candidate-detail {
+    min-height: 520px;
+    padding: var(--space-2);
+  }
+  .candidate-list .section-head {
+    margin-bottom: var(--space-2);
+  }
+  .candidate-list .section-head span {
+    color: var(--color-ink-soft);
+    font-size: var(--fs-small);
+  }
+  .candidate-list__items {
+    display: grid;
+    gap: 0.75rem;
+  }
+  .candidate-row {
+    width: 100%;
+    text-align: left;
+    border: 1px solid var(--color-line);
+    background: var(--color-bg);
+    padding: var(--space-2);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: var(--space-1);
+    color: var(--color-ink);
+  }
+  .candidate-row[aria-selected="true"] {
+    border-color: var(--color-accent);
+    box-shadow: inset 3px 0 0 var(--color-accent);
+  }
+  .candidate-row h3 {
+    font-size: 1rem;
+  }
+  .candidate-row p {
+    color: var(--color-ink-soft);
+    font-size: var(--fs-small);
+  }
+  .status-pill,
+  .source-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-line);
+    background: var(--color-bg-alt);
+    padding: 0.18rem 0.5rem;
+    font-size: 0.75rem;
+    line-height: 1.4;
+    white-space: nowrap;
+  }
+  .candidate-detail {
+    position: sticky;
+    top: 122px;
+  }
+  .candidate-detail h2 {
+    font-size: 1.15rem;
+    margin-bottom: var(--space-2);
+  }
+  .empty-state {
+    color: var(--color-ink-soft);
+    border: 1px dashed var(--color-line);
+    padding: var(--space-3);
+  }
+  [data-detail-form] {
+    display: grid;
+    gap: var(--space-2);
+  }
+  [data-detail-form][hidden] {
+    display: none;
+  }
+  .detail-head h3 {
+    margin-top: var(--space-1);
+    font-size: 1.45rem;
+  }
+  .detail-head p:last-child,
+  .detail-block p {
+    color: var(--color-ink-soft);
+    white-space: pre-wrap;
+  }
+  .detail-block {
+    border-top: 1px solid var(--color-line);
+    padding-top: var(--space-2);
+  }
+  .detail-block h4 {
+    font-size: var(--fs-small);
+    letter-spacing: 0.08em;
+    color: var(--color-ink);
+    margin-bottom: 0.2rem;
+  }
+  .detail-actions {
+    display: flex;
+    gap: var(--space-1);
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 980px) {
+    .metrics,
+    .admin-grid,
+    .filters {
+      grid-template-columns: 1fr;
+    }
+    .admin-tools {
+      display: grid;
+    }
+    .candidate-detail {
+      position: static;
+    }
+  }
+  @media (max-width: 640px) {
+    .metrics {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>
+
+<script>
+  const STORAGE_KEY = "landscape-recruitment-candidates";
+  const STATUSES = [
+    "新規応募",
+    "確認中",
+    "連絡済み",
+    "面接調整中",
+    "面接予定",
+    "面接済み",
+    "内定",
+    "採用",
+    "不採用",
+    "辞退",
+    "保留",
+  ];
+  const SOURCE_LABELS = {
+    official: "公式サイト",
+    indeed: "Indeed",
+    stanby: "スタンバイ",
+    instagram: "Instagram",
+    referral: "紹介",
+    store: "店頭",
+    other: "その他",
+  };
+
+  const app = document.querySelector("[data-admin-app]");
+  const listEl = app?.querySelector("[data-list]");
+  const searchEl = app?.querySelector("[data-search]");
+  const statusFilterEl = app?.querySelector("[data-status-filter]");
+  const sourceFilterEl = app?.querySelector("[data-source-filter]");
+  const detailForm = app?.querySelector("[data-detail-form]");
+  const emptyEl = app?.querySelector("[data-empty]");
+  let selectedId = "";
+
+  function readCandidates() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    } catch {
+      return [];
+    }
+  }
+
+  function writeCandidates(candidates) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(candidates));
+  }
+
+  function formatDate(value) {
+    if (!value) return "";
+    return new Intl.DateTimeFormat("ja-JP", {
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(new Date(value));
+  }
+
+  function candidateMatches(candidate) {
+    const query = String(searchEl?.value || "").trim().toLowerCase();
+    const status = String(statusFilterEl?.value || "");
+    const source = String(sourceFilterEl?.value || "");
+    const haystack = [
+      candidate.name,
+      candidate.kana,
+      candidate.email,
+      candidate.phone,
+      candidate.store,
+      candidate.job,
+      SOURCE_LABELS[candidate.source] || candidate.source,
+      candidate.status,
+    ].join(" ").toLowerCase();
+    return (!query || haystack.includes(query)) && (!status || candidate.status === status) && (!source || candidate.source === source);
+  }
+
+  function updateMetrics(candidates) {
+    app.querySelector("[data-metric='total']").textContent = String(candidates.length);
+    app.querySelector("[data-metric='new']").textContent = String(candidates.filter((c) => c.status === "新規応募").length);
+    app.querySelector("[data-metric='interview']").textContent = String(candidates.filter((c) => c.status.includes("面接")).length);
+    app.querySelector("[data-metric='hired']").textContent = String(candidates.filter((c) => c.status === "採用").length);
+  }
+
+  function renderList() {
+    const candidates = readCandidates();
+    const visible = candidates.filter(candidateMatches);
+    updateMetrics(candidates);
+    app.querySelector("[data-count]").textContent = `${visible.length}件`;
+    listEl.innerHTML = "";
+
+    if (visible.length === 0) {
+      listEl.innerHTML = `<div class="empty-state">応募者がいません。応募フォームまたはサンプル追加で登録できます。</div>`;
+      return;
+    }
+
+    for (const candidate of visible) {
+      const row = document.createElement("button");
+      row.type = "button";
+      row.className = "candidate-row";
+      row.setAttribute("aria-selected", String(candidate.id === selectedId));
+      row.innerHTML = `
+        <div>
+          <h3>${escapeHtml(candidate.name)}</h3>
+          <p>${escapeHtml(candidate.store)} / ${escapeHtml(candidate.job)}</p>
+          <p>${escapeHtml(SOURCE_LABELS[candidate.source] || candidate.source)} ・ ${formatDate(candidate.createdAt)}</p>
+        </div>
+        <span class="status-pill">${escapeHtml(candidate.status)}</span>
+      `;
+      row.addEventListener("click", () => selectCandidate(candidate.id));
+      listEl.append(row);
+    }
+  }
+
+  function selectCandidate(id) {
+    const candidate = readCandidates().find((item) => item.id === id);
+    if (!candidate || !detailForm) return;
+    selectedId = id;
+    emptyEl.hidden = true;
+    detailForm.hidden = false;
+    detailForm.elements.id.value = candidate.id;
+    app.querySelector("[data-detail-source]").textContent = SOURCE_LABELS[candidate.source] || candidate.source;
+    app.querySelector("[data-detail-name]").textContent = candidate.name;
+    app.querySelector("[data-detail-meta]").textContent = `${candidate.store} / ${candidate.job} / ${candidate.employmentType || "未設定"}`;
+    app.querySelector("[data-detail-contact]").textContent = `${candidate.email}\n${candidate.phone}`;
+    app.querySelector("[data-detail-availability]").textContent = candidate.availability || "未入力";
+    app.querySelector("[data-detail-motivation]").textContent = candidate.motivation || "未入力";
+    detailForm.elements.status.value = candidate.status;
+    detailForm.elements.note.value = candidate.note || "";
+    renderList();
+  }
+
+  function escapeHtml(value) {
+    return String(value || "").replace(/[&<>"']/g, (char) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;",
+    })[char]);
+  }
+
+  function seedSamples() {
+    const now = new Date();
+    const samples = [
+      {
+        id: `sample-${Date.now()}-1`,
+        name: "佐藤 花",
+        kana: "サトウ ハナ",
+        email: "hana@example.com",
+        phone: "090-1111-2222",
+        store: "本宮07",
+        job: "バリスタ / 店舗スタッフ",
+        employmentType: "アルバイト",
+        source: "indeed",
+        availability: "平日夕方、土日どちらか勤務可能",
+        motivation: "地域に根ざしたお店で接客とコーヒーを学びたいです。",
+        note: "Indeed経由。初回連絡を優先。",
+        status: "新規応募",
+        createdAt: now.toISOString(),
+        updatedAt: now.toISOString(),
+      },
+      {
+        id: `sample-${Date.now()}-2`,
+        name: "高橋 晴",
+        kana: "タカハシ ハル",
+        email: "haru@example.com",
+        phone: "080-3333-4444",
+        store: "坂出",
+        job: "キッチン / フード",
+        employmentType: "正社員候補",
+        source: "official",
+        availability: "週4日以上。朝から夕方まで希望。",
+        motivation: "食と場づくりに関わりたいです。",
+        note: "",
+        status: "面接調整中",
+        createdAt: new Date(now.getTime() - 86400000).toISOString(),
+        updatedAt: now.toISOString(),
+      },
+    ];
+    writeCandidates([...samples, ...readCandidates()]);
+    selectedId = samples[0].id;
+    renderList();
+    selectCandidate(selectedId);
+  }
+
+  function importCsv() {
+    const textarea = app.querySelector("[data-csv]");
+    const rows = String(textarea.value || "").split(/\r?\n/).map((row) => row.trim()).filter(Boolean);
+    const candidates = rows.map((row, index) => {
+      const [name, email, phone, store, job, source] = row.split(",").map((cell) => cell.trim());
+      const now = new Date().toISOString();
+      return {
+        id: `csv-${Date.now()}-${index}`,
+        name: name || "名前未設定",
+        kana: "",
+        email: email || "",
+        phone: phone || "",
+        store: store || "未定",
+        job: job || "未定",
+        employmentType: "",
+        source: source || "other",
+        availability: "",
+        motivation: "CSVインポート",
+        note: "",
+        status: "新規応募",
+        createdAt: now,
+        updatedAt: now,
+      };
+    });
+    if (candidates.length === 0) return;
+    writeCandidates([...candidates, ...readCandidates()]);
+    textarea.value = "";
+    selectedId = candidates[0].id;
+    renderList();
+    selectCandidate(selectedId);
+  }
+
+  function exportCsv() {
+    const candidates = readCandidates();
+    const header = ["氏名", "メール", "電話", "店舗", "職種", "媒体", "ステータス", "メモ"];
+    const rows = candidates.map((c) => [c.name, c.email, c.phone, c.store, c.job, SOURCE_LABELS[c.source] || c.source, c.status, c.note || ""]);
+    const csv = [header, ...rows].map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "landscape-recruitment-candidates.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  statusFilterEl.innerHTML += STATUSES.map((status) => `<option value="${status}">${status}</option>`).join("");
+  app.querySelector("[data-detail-status]").innerHTML = STATUSES.map((status) => `<option value="${status}">${status}</option>`).join("");
+  searchEl?.addEventListener("input", renderList);
+  statusFilterEl?.addEventListener("change", renderList);
+  sourceFilterEl?.addEventListener("change", renderList);
+  app.querySelector("[data-seed]")?.addEventListener("click", seedSamples);
+  app.querySelector("[data-import]")?.addEventListener("click", importCsv);
+  app.querySelector("[data-export]")?.addEventListener("click", exportCsv);
+  app.querySelector("[data-clear]")?.addEventListener("click", () => {
+    if (!confirm("ローカルの応募者データをすべて削除しますか？")) return;
+    writeCandidates([]);
+    selectedId = "";
+    detailForm.hidden = true;
+    emptyEl.hidden = false;
+    renderList();
+  });
+  app.querySelector("[data-delete]")?.addEventListener("click", () => {
+    if (!selectedId || !confirm("この応募者を削除しますか？")) return;
+    writeCandidates(readCandidates().filter((candidate) => candidate.id !== selectedId));
+    selectedId = "";
+    detailForm.hidden = true;
+    emptyEl.hidden = false;
+    renderList();
+  });
+  detailForm?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const id = detailForm.elements.id.value;
+    const candidates = readCandidates().map((candidate) => {
+      if (candidate.id !== id) return candidate;
+      return {
+        ...candidate,
+        status: detailForm.elements.status.value,
+        note: detailForm.elements.note.value,
+        updatedAt: new Date().toISOString(),
+      };
+    });
+    writeCandidates(candidates);
+    renderList();
+    selectCandidate(id);
+  });
+
+  renderList();
+</script>

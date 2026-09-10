@@ -1,0 +1,13 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import RecruitBody from "../../components/pages/RecruitBody.astro";
+const locale = "ja" as const;
+---
+
+<BaseLayout
+  locale={locale}
+  title="RECRUIT"
+  description="LANDSCAPE COFFEE の採用ページ。募集職種、働く場所、応募フォーム。"
+>
+  <RecruitBody />
+</BaseLayout>

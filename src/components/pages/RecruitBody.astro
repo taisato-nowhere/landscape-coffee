@@ -1,0 +1,374 @@
+---
+import PageHeader from "../PageHeader.astro";
+import { withBase } from "../../text/ui";
+---
+
+<PageHeader
+  eyebrow="RECRUIT"
+  title="LANDSCAPEで働く"
+  subtitle="街の記憶と、これからの景色を一緒につくる人を募集しています。"
+/>
+
+<div class="container recruit">
+  <section class="recruit-intro" aria-labelledby="recruit-message">
+    <div>
+      <p class="eyebrow">MESSAGE</p>
+      <h2 id="recruit-message">コーヒーを淹れるだけではなく、場所を育てる仕事です。</h2>
+    </div>
+    <p>
+      LANDSCAPE COFFEE は、日常の中に思い出の交差点をつくるブランドです。
+      接客、抽出、焙煎、街との関わり。そのひとつひとつを丁寧に重ねながら、
+      お店を訪れる人にとっての景色を一緒につくっていきます。
+    </p>
+  </section>
+
+  <section class="jobs" aria-labelledby="jobs-title">
+    <div class="section-head">
+      <h2 id="jobs-title">募集している仕事</h2>
+      <a class="link-more" href="#apply">APPLY</a>
+    </div>
+    <div class="job-grid">
+      <article class="job-card" data-job="バリスタ / 店舗スタッフ">
+        <p class="job-card__store">坂出 / 本宮07</p>
+        <h3>バリスタ / 店舗スタッフ</h3>
+        <p>接客、ドリンク提供、仕込み、店内整備。LANDSCAPEの入口をつくる役割です。</p>
+        <dl>
+          <div><dt>雇用形態</dt><dd>アルバイト / 正社員候補</dd></div>
+          <div><dt>勤務</dt><dd>週2日から相談</dd></div>
+        </dl>
+      </article>
+      <article class="job-card" data-job="キッチン / フード">
+        <p class="job-card__store">本宮07</p>
+        <h3>キッチン / フード</h3>
+        <p>ランチや焼き菓子など、コーヒーと並ぶ体験を支える仕事です。</p>
+        <dl>
+          <div><dt>雇用形態</dt><dd>アルバイト</dd></div>
+          <div><dt>勤務</dt><dd>昼帯中心</dd></div>
+        </dl>
+      </article>
+      <article class="job-card" data-job="焙煎 / ロースタリー補助">
+        <p class="job-card__store">高山</p>
+        <h3>焙煎 / ロースタリー補助</h3>
+        <p>焙煎所の立ち上げに向けた候補枠。豆の選別、梱包、出荷補助から始めます。</p>
+        <dl>
+          <div><dt>雇用形態</dt><dd>要相談</dd></div>
+          <div><dt>状態</dt><dd>Coming Soon</dd></div>
+        </dl>
+      </article>
+    </div>
+  </section>
+
+  <section class="apply-shell" id="apply" aria-labelledby="apply-title">
+    <div class="apply-copy">
+      <p class="eyebrow">APPLICATION</p>
+      <h2 id="apply-title">応募フォーム</h2>
+      <p>
+        このローカル試作では、送信した応募者情報をブラウザ内に保存します。
+        管理画面で一覧・ステータス変更・メモ編集を試せます。
+      </p>
+      <a class="admin-link" href={withBase("/admin/recruitment")}>管理画面を見る</a>
+    </div>
+
+    <form class="recruit-form" data-recruit-form>
+      <div class="form-grid">
+        <label class="field">
+          <span>氏名</span>
+          <input name="name" type="text" autocomplete="name" required />
+        </label>
+        <label class="field">
+          <span>フリガナ</span>
+          <input name="kana" type="text" required />
+        </label>
+        <label class="field">
+          <span>メールアドレス</span>
+          <input name="email" type="email" autocomplete="email" required />
+        </label>
+        <label class="field">
+          <span>電話番号</span>
+          <input name="phone" type="tel" autocomplete="tel" required />
+        </label>
+        <label class="field">
+          <span>希望店舗</span>
+          <select name="store" required>
+            <option value="">選択してください</option>
+            <option>坂出</option>
+            <option>本宮07</option>
+            <option>高山</option>
+            <option>高松</option>
+            <option>未定</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>希望職種</span>
+          <select name="job" required>
+            <option value="">選択してください</option>
+            <option>バリスタ / 店舗スタッフ</option>
+            <option>キッチン / フード</option>
+            <option>焙煎 / ロースタリー補助</option>
+            <option>その他</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>雇用形態</span>
+          <select name="employmentType" required>
+            <option>アルバイト</option>
+            <option>正社員</option>
+            <option>正社員候補</option>
+            <option>相談したい</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>応募経路</span>
+          <select name="source" required>
+            <option value="official">LANDSCAPE公式サイト</option>
+            <option value="indeed">Indeed</option>
+            <option value="stanby">スタンバイ</option>
+            <option value="instagram">Instagram</option>
+            <option value="referral">紹介</option>
+            <option value="store">店頭</option>
+            <option value="other">その他</option>
+          </select>
+        </label>
+      </div>
+      <label class="field">
+        <span>勤務可能曜日・時間</span>
+        <textarea name="availability" rows="3" required></textarea>
+      </label>
+      <label class="field">
+        <span>志望理由 / 自由記入</span>
+        <textarea name="motivation" rows="5" required></textarea>
+      </label>
+      <label class="check-field">
+        <input name="consent" type="checkbox" required />
+        <span>採用選考のために入力情報を利用することに同意します。</span>
+      </label>
+      <div class="form-actions">
+        <button type="submit">応募を登録する</button>
+        <p data-form-message role="status" aria-live="polite"></p>
+      </div>
+    </form>
+  </section>
+</div>
+
+<style>
+  .recruit {
+    display: grid;
+    gap: var(--space-6);
+    padding-bottom: var(--space-6);
+  }
+  .recruit-intro {
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    gap: var(--space-5);
+    align-items: start;
+    border-bottom: 1px solid var(--color-line);
+    padding-bottom: var(--space-5);
+  }
+  .recruit-intro h2,
+  .apply-copy h2 {
+    font-family: var(--font-serif);
+    font-size: var(--fs-h2);
+    font-weight: 500;
+    line-height: 1.5;
+    margin-top: var(--space-1);
+  }
+  .recruit-intro p,
+  .apply-copy p,
+  .job-card p {
+    color: var(--color-ink-soft);
+  }
+  .job-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-2);
+  }
+  .job-card {
+    border: 1px solid var(--color-line);
+    background: color-mix(in srgb, var(--color-surface) 70%, transparent);
+    padding: var(--space-3);
+    min-height: 330px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  .job-card__store {
+    font-size: var(--fs-small);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-accent) !important;
+  }
+  .job-card h3 {
+    font-size: 1.25rem;
+    line-height: 1.4;
+  }
+  .job-card dl {
+    margin-top: auto;
+    display: grid;
+    gap: 0.6rem;
+    border-top: 1px solid var(--color-line);
+    padding-top: var(--space-2);
+    font-size: var(--fs-small);
+  }
+  .job-card dl div {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-2);
+  }
+  .job-card dt {
+    color: var(--color-ink-soft);
+  }
+  .job-card dd {
+    text-align: right;
+  }
+  .apply-shell {
+    display: grid;
+    grid-template-columns: 0.72fr 1.28fr;
+    gap: var(--space-5);
+    align-items: start;
+    background: var(--color-bg-alt);
+    padding: var(--space-4);
+    border: 1px solid var(--color-line);
+  }
+  .admin-link {
+    display: inline-flex;
+    margin-top: var(--space-3);
+    color: var(--color-accent);
+    border-bottom: 1px solid currentColor;
+    font-size: var(--fs-small);
+    letter-spacing: 0.12em;
+  }
+  .recruit-form {
+    display: grid;
+    gap: var(--space-3);
+    background: var(--color-bg);
+    padding: var(--space-3);
+    border: 1px solid var(--color-line);
+  }
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2);
+  }
+  .field {
+    display: grid;
+    gap: 0.4rem;
+  }
+  .field span,
+  .check-field {
+    font-size: var(--fs-small);
+    color: var(--color-ink-soft);
+  }
+  .field input,
+  .field select,
+  .field textarea {
+    width: 100%;
+    font: inherit;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius);
+    background: var(--color-surface);
+    color: var(--color-ink);
+    padding: 0.72rem 0.8rem;
+  }
+  .field textarea {
+    resize: vertical;
+  }
+  .check-field {
+    display: flex;
+    gap: 0.65rem;
+    align-items: flex-start;
+  }
+  .check-field input {
+    margin-top: 0.45rem;
+  }
+  .form-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+  }
+  .form-actions button {
+    border: none;
+    background: var(--color-ink);
+    color: var(--color-bg);
+    padding: 0.82rem 1.8rem;
+    letter-spacing: 0.1em;
+    transition: background var(--transition);
+  }
+  .form-actions button:hover {
+    background: var(--color-accent);
+  }
+  .form-actions p {
+    color: var(--color-accent);
+    font-size: var(--fs-small);
+  }
+
+  @media (max-width: 920px) {
+    .recruit-intro,
+    .apply-shell {
+      grid-template-columns: 1fr;
+    }
+    .job-grid {
+      grid-template-columns: 1fr;
+    }
+    .job-card {
+      min-height: auto;
+    }
+  }
+  @media (max-width: 620px) {
+    .form-grid {
+      grid-template-columns: 1fr;
+    }
+    .apply-shell {
+      padding: var(--space-2);
+    }
+  }
+</style>
+
+<script>
+  const STORAGE_KEY = "landscape-recruitment-candidates";
+  const form = document.querySelector("[data-recruit-form]");
+  const message = document.querySelector("[data-form-message]");
+
+  function readCandidates() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    } catch {
+      return [];
+    }
+  }
+
+  function writeCandidates(candidates) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(candidates));
+  }
+
+  form?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const data = new FormData(form);
+    const now = new Date().toISOString();
+    const candidate = {
+      id: `cand-${Date.now()}`,
+      name: String(data.get("name") || ""),
+      kana: String(data.get("kana") || ""),
+      email: String(data.get("email") || ""),
+      phone: String(data.get("phone") || ""),
+      store: String(data.get("store") || ""),
+      job: String(data.get("job") || ""),
+      employmentType: String(data.get("employmentType") || ""),
+      source: String(data.get("source") || "official"),
+      availability: String(data.get("availability") || ""),
+      motivation: String(data.get("motivation") || ""),
+      note: "",
+      status: "新規応募",
+      createdAt: now,
+      updatedAt: now,
+    };
+
+    const candidates = readCandidates();
+    candidates.unshift(candidate);
+    writeCandidates(candidates);
+    form.reset();
+    if (message) {
+      message.textContent = "応募者をローカル管理画面に登録しました。";
+    }
+  });
+</script>

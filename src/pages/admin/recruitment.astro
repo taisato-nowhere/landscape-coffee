@@ -1,0 +1,13 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import RecruitAdminBody from "../../components/pages/RecruitAdminBody.astro";
+const locale = "ja" as const;
+---
+
+<BaseLayout
+  locale={locale}
+  title="応募者管理"
+  description="LANDSCAPE COFFEE 採用管理のローカル試作画面。"
+>
+  <RecruitAdminBody />
+</BaseLayout>
