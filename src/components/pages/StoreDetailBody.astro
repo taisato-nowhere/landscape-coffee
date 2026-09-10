@@ -3,6 +3,7 @@ import { Image } from "astro:assets";
 import { useTranslations, localizedPath, withBase, type Locale } from "../../text/ui";
 import { getStoreImage } from "../../lib/images";
 import { type StoreEntry, cmsImage } from "../../lib/microcms";
+import goodsIllustrationUrl from "../../assets/images/brand07/07_goods_illust.svg?url";
 import Illustration from "../Illustration.astro";
 
 interface Props {
@@ -76,7 +77,11 @@ const label = {
       </span>
     </div>
 
-    {store.motif && (
+    {isMotomiya ? (
+      <div class="illust-divider illust-divider--goods" aria-hidden="true">
+        <img class="store-detail__goods-illustration" src={goodsIllustrationUrl} alt="" loading="lazy" decoding="async" />
+      </div>
+    ) : store.motif && (
       <div class="illust-divider"><Illustration name={store.motif} width={140} /></div>
     )}
 
@@ -182,6 +187,16 @@ const label = {
     text-decoration: underline;
     text-decoration-color: var(--color-line);
     text-underline-offset: 0.24em;
+  }
+  .illust-divider--goods {
+    padding-block: var(--space-3);
+  }
+  .store-detail__goods-illustration {
+    display: block;
+    width: min(280px, 70vw);
+    aspect-ratio: 1;
+    object-fit: cover;
+    object-position: center;
   }
   .store-detail__sns {
     margin: calc(var(--space-4) * -0.4) 0 var(--space-4);
