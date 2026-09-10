@@ -8,7 +8,7 @@ import {
   localizedPath,
   type Locale,
 } from "../text/ui";
-import { getImage } from "../lib/images";
+import { getStoreImage } from "../lib/images";
 import { getStores, cmsImage } from "../lib/microcms";
 
 interface Props {
@@ -31,7 +31,8 @@ const featured = (await getStores()).filter((s) => s.featured);
     <ul class="landscapes__list">
       {
         featured.map((s) => {
-          const local = getImage(`stores/${s.slug}`);
+          const local = getStoreImage(s.slug);
+          const preferLocal = s.slug === "motomiya" && local;
           return (
             <li class="landscape">
               <span class="landscape__rail" aria-hidden="true">
@@ -47,7 +48,15 @@ const featured = (await getStores()).filter((s) => s.featured);
 
               <a class="lcard" href={localizedPath(`/stores/${s.slug}`, locale)}>
                 <div class="lcard__media">
-                  {s.thumbnailUrl ? (
+                  {preferLocal ? (
+                    <Image
+                      class="lcard__img"
+                      src={local}
+                      alt=""
+                      widths={[600, 1000, 1400]}
+                      sizes="(max-width: 720px) 100vw, 64vw"
+                    />
+                  ) : s.thumbnailUrl ? (
                     <img class="lcard__img" src={cmsImage(s.thumbnailUrl, 1400)} alt="" loading="lazy" />
                   ) : local ? (
                     <Image

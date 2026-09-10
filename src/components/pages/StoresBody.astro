@@ -2,7 +2,7 @@
 import { Image } from "astro:assets";
 import PageHeader from "../PageHeader.astro";
 import { useTranslations, localizedPath, type Locale } from "../../text/ui";
-import { getImage } from "../../lib/images";
+import { getStoreImage } from "../../lib/images";
 import { getStores, cmsImage } from "../../lib/microcms";
 
 interface Props {
@@ -23,12 +23,15 @@ const head = {
   <ul class="stores-grid">
     {
       stores.map((s) => {
-        const local = getImage(`stores/${s.slug}`);
+        const local = getStoreImage(s.slug);
+        const preferLocal = s.slug === "motomiya" && local;
         const open = s.status === "open";
         return (
           <li class="store-card">
             <a href={localizedPath(`/stores/${s.slug}`, locale)}>
-              {s.thumbnailUrl ? (
+              {preferLocal ? (
+                <Image class="store-card__img" src={local} alt="" widths={[400, 800]} sizes="(max-width: 720px) 100vw, 50vw" />
+              ) : s.thumbnailUrl ? (
                 <img class="store-card__img" src={cmsImage(s.thumbnailUrl, 800)} alt="" loading="lazy" />
               ) : local ? (
                 <Image class="store-card__img" src={local} alt="" widths={[400, 800]} sizes="(max-width: 720px) 100vw, 50vw" />

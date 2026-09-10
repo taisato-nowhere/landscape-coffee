@@ -1,7 +1,7 @@
 ---
 import { Image } from "astro:assets";
-import { useTranslations, localizedPath, type Locale } from "../../text/ui";
-import { getImage } from "../../lib/images";
+import { useTranslations, localizedPath, withBase, type Locale } from "../../text/ui";
+import { getStoreImage } from "../../lib/images";
 import { type StoreEntry, cmsImage } from "../../lib/microcms";
 import Illustration from "../Illustration.astro";
 
@@ -12,7 +12,10 @@ interface Props {
 const { locale, store } = Astro.props;
 
 const t = useTranslations(locale);
-const local = getImage(`stores/${store.slug}`);
+const local = getStoreImage(store.slug);
+const isMotomiya = store.slug === "motomiya";
+const motomiyaVideoSrc = withBase("/media/landscape-hero.mp4?v=20260910-trim");
+const motomiyaPosterSrc = withBase("/media/landscape-hero-poster.jpg");
 const open = store.status === "open";
 const instagramUrl = store.instagramUrl.trim();
 
@@ -28,7 +31,30 @@ const label = {
 
 <section class="store-detail">
   {
-    store.thumbnailUrl ? (
+    isMotomiya ? (
+      <div class="store-detail__hero store-detail__hero--video" aria-hidden="true">
+        <img
+          class="store-detail__poster"
+          src={motomiyaPosterSrc}
+          alt=""
+          width="1920"
+          height="1080"
+          loading="eager"
+          decoding="async"
+        />
+        <video
+          class="store-detail__video"
+          autoplay
+          muted
+          loop
+          playsinline
+          preload="metadata"
+          poster={motomiyaPosterSrc}
+        >
+          <source src={motomiyaVideoSrc} type='video/mp4; codecs="avc1.640029"' />
+        </video>
+      </div>
+    ) : store.thumbnailUrl ? (
       <img class="store-detail__hero" src={cmsImage(store.thumbnailUrl, 2000)} alt="" />
     ) : local ? (
       <Image class="store-detail__hero" src={local} alt="" widths={[768, 1280, 2000]} sizes="100vw" />
@@ -84,11 +110,26 @@ const label = {
 
 <style>
   .store-detail__hero {
+    display: block;
     width: 100%;
     aspect-ratio: 16 / 9;
     object-fit: cover;
     margin-bottom: var(--space-5);
   }
+  .store-detail__hero--video {
+    position: relative;
+    overflow: hidden;
+    background: #171612;
+  }
+  .store-detail__poster,
+  .store-detail__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .store-detail__video { z-index: 1; }
   .store-detail__head {
     display: flex;
     align-items: center;
@@ -145,4 +186,8 @@ const label = {
   .store-detail__body :global(h3) { letter-spacing: 0.12em; color: var(--color-accent); margin: var(--space-3) 0 0.4rem; }
   .store-detail__body :global(img) { width: 100%; height: auto; margin: var(--space-2) 0; }
   .store-detail__body :global(p) { margin-bottom: var(--space-2); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .store-detail__video { display: none; }
+  }
 </style>

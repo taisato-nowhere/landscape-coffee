@@ -19,6 +19,15 @@ export function getImage(key: string): ImageMetadata | null {
   return byKey.get(key) ?? null;
 }
 
+const storeImageKeys: Record<string, string> = {
+  motomiya: "stores/motomiya_site_movie",
+};
+
+/** 店舗ごとのサイト用画像を返す。個別指定がなければ slug と同名の画像を使う。 */
+export function getStoreImage(slug: string): ImageMetadata | null {
+  return getImage(storeImageKeys[slug] ?? `stores/${slug}`);
+}
+
 /**
  * フォルダ（プレフィックス）配下の画像をまとめて取得。
  * 例) getImages("hero") → hero/ 配下の全画像。
