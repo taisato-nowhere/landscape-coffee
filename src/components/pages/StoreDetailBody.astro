@@ -15,8 +15,17 @@ const { locale, store } = Astro.props;
 const t = useTranslations(locale);
 const local = getStoreImage(store.slug);
 const isMotomiya = store.slug === "motomiya";
-const motomiyaVideoSrc = withBase("/media/motomiya-hero.mp4?v=20260910-trim");
-const motomiyaPosterSrc = withBase("/media/motomiya-hero-poster.jpg");
+const videoHero = store.slug === "motomiya"
+  ? {
+      videoSrc: withBase("/media/motomiya-hero.mp4?v=20260910-trim"),
+      posterSrc: withBase("/media/motomiya-hero-poster.jpg"),
+    }
+  : store.slug === "takayama"
+    ? {
+        videoSrc: withBase("/media/takayama-hero.mp4?v=20260911"),
+        posterSrc: withBase("/media/takayama-hero-poster.jpg?v=20260911"),
+      }
+    : null;
 const open = store.status === "open";
 const mapUrl = store.mapUrl.trim();
 const instagramUrl = store.instagramUrl.trim();
@@ -33,11 +42,11 @@ const label = {
 
 <section class="store-detail">
   {
-    isMotomiya ? (
+    videoHero ? (
       <div class="store-detail__hero store-detail__hero--video" aria-hidden="true">
         <img
           class="store-detail__poster"
-          src={motomiyaPosterSrc}
+          src={videoHero.posterSrc}
           alt=""
           width="1920"
           height="1080"
@@ -51,9 +60,9 @@ const label = {
           loop
           playsinline
           preload="metadata"
-          poster={motomiyaPosterSrc}
+          poster={videoHero.posterSrc}
         >
-          <source src={motomiyaVideoSrc} type='video/mp4; codecs="avc1.640029"' />
+          <source src={videoHero.videoSrc} type='video/mp4; codecs="avc1.640029"' />
         </video>
       </div>
     ) : store.thumbnailUrl ? (
