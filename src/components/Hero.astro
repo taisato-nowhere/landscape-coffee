@@ -99,7 +99,9 @@ const posterSrc = withBase("/media/landscape-hero-poster.jpg?v=20260911-coffee-v
     width: min(42vw, 540px);
     transform: translate(-50%, -50%);
     filter: invert(1) brightness(2.4);
+    animation: hero-logo-appear 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.35s both;
     pointer-events: none;
+    will-change: opacity, transform;
   }
 
   .hero__logo :global(.logo) {
@@ -150,6 +152,17 @@ const posterSrc = withBase("/media/landscape-hero-poster.jpg?v=20260911-coffee-v
     }
   }
 
+  @keyframes hero-logo-appear {
+    from {
+      opacity: 0;
+      transform: translate(-50%, calc(-50% + 10px)) scale(0.985);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+  }
+
   @media (max-width: 640px) {
     .hero {
       min-height: 100svh;
@@ -179,6 +192,12 @@ const posterSrc = withBase("/media/landscape-hero-poster.jpg?v=20260911-coffee-v
     .hero__scroll i::after {
       animation: none;
       transform: none;
+    }
+
+    .hero__logo {
+      animation: none;
+      opacity: 1;
+      transform: translate(-50%, -50%);
     }
   }
 </style>
